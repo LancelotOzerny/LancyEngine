@@ -18,8 +18,9 @@ class Engine extends GameEntity
         this.elapsedTime = 0;
     }
 
-    init(selector)
+    init(selector, options)
     {
+        this.options = options;
         this.canvas = document.querySelector(selector);
         if (!this.canvas)
         {
@@ -27,6 +28,10 @@ class Engine extends GameEntity
         }
 
         this.context = this.canvas.getContext('2d');
+
+        if (this.options.width) this.canvas.setAttribute('width', this.options.width + 'px');
+        if (this.options.height) this.canvas.setAttribute('height', this.options.height + 'px');
+
         return this;
     }
 
