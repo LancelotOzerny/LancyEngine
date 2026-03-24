@@ -1,0 +1,4 @@
+class BaseComponent
+{
+    parent = null;
+}

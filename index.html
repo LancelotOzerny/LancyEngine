@@ -9,14 +9,14 @@
 <body>
 <canvas id="game-canvas"></canvas>
 
+<script src="engine/math.min.js"></script>
 <script src="engine/common.min.js"></script>
+<script src="engine/components.min.js"></script>
 <script src="engine/core.min.js"></script>
 <script src="engine/ui.min.js"></script>
 
 
 <script>
-    let score = 0;
-
     document.addEventListener('DOMContentLoaded', async () => {
         let game = new Game();
         game.init();
@@ -28,34 +28,7 @@
         .then(() => game.start());
     });
 
-    class Hero extends GameObject
-    {
-        x = 100;
-        y = 0;
-        vy = 0;
-
-        start = () =>
-        {
-            super.start();
-            this.playerImg = Engine.instance.assets.get('player');
-        }
-
-        update = () => {
-            this.vy += 0.01 * 9.8 * 8;
-            console.log(this.vy)
-            this.y += this.vy;
-
-            if (this.y > 500)
-            {
-                this.vy = -25;
-            }
-        }
-
-        render = (ctx) =>
-        {
-            if (this.playerImg) ctx.drawImage(this.playerImg, this.x, this.y);
-        }
-    }
+    class Hero extends GameObject {}
 
     class Game
     {
@@ -66,10 +39,20 @@
                 height: 1080,
             });
 
+            /* HERO SET */
             let hero = new Hero();
-            let scene__main = new Scene();
 
+            let physic = new PhysicComponent();
+            hero.bindComponent(physic);
+
+            let sprite = new SpriteComponent();
+            sprite.imageName = 'player'
+            hero.bindComponent(sprite);
+
+            /* SCENE SET */
+            let scene__main = new Scene();
             scene__main.gameObjects.append(hero);
+
             this.engine.scenes.append(scene__main);
         }
 
@@ -81,7 +64,7 @@
             Engine.instance.assets = loadedAssets;
         }
 
-        start = () =>
+        start()
         {
             this.engine.startGameLoop();
         }

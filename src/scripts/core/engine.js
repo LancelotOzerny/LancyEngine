@@ -76,7 +76,6 @@ class Engine extends GameEntity
         }
 
         this.isRunning = false;
-        console.log('Игровой цикл остановлен');
     }
 
     #gameLoop(currentTime = performance.now()) {
@@ -91,7 +90,7 @@ class Engine extends GameEntity
 
         while (this.elapsedTime >= this.frameTime)
         {
-            this.update(this.frameTime);
+            this.update(this.frameTime / 100);
             this.elapsedTime -= this.frameTime;
         }
 
@@ -100,9 +99,9 @@ class Engine extends GameEntity
         this.animationFrameId = requestAnimationFrame(this.#gameLoop.bind(this));
     }
 
-    start = () => this.scenes.start();
-    update = (deltaTime) => this.scenes.update(deltaTime);
-    render = (ctx) => this.scenes.render(ctx);
+    start() { this.scenes.start(); }
+    update(deltaTime) { this.scenes.update(deltaTime) };
+    render(ctx) { this.scenes.render(ctx) };
 
     static get instance()
     {
