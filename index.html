@@ -37,7 +37,8 @@
             }
         });
 
-        let scene = engine.createScene();
+        let scene = new Scene();
+        engine.scenes.append(scene);
         engine.startGameLoop();
     });
 </script>

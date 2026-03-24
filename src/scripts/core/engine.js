@@ -1,7 +1,7 @@
-class Engine extends GameActions
+class Engine extends GameEntity
 {
     static #instance = null;
-    scenes = [];
+    scenes = new GameCollection();
 
     constructor()
     {
@@ -90,17 +90,9 @@ class Engine extends GameActions
         this.animationFrameId = requestAnimationFrame(this.#gameLoop.bind(this));
     }
 
-    start= () => this.scenes.forEach(scene => scene.start());
-    update = (deltaTime) => this.scenes.forEach(scene => scene.update());
-
-    createScene()
-    {
-        let scene = new Scene();
-        this.scenes.push(scene);
-        return scene;
-    }
-
-    render = (ctx) => this.scenes.forEach(scene => scene.render(ctx));
+    start = () => this.scenes.start();
+    update = (deltaTime) => this.scenes.update(deltaTime);
+    render = (ctx) => this.scenes.render(ctx);
 
     static get instance()
     {

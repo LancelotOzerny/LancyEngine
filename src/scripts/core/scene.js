@@ -1,12 +1,7 @@
-class Scene extends GameActions
+class Scene extends GameEntity
 {
-    gameObjects = [];
-    addGameObject(obj)
-    {
-        this.gameObjects.push(obj);
-    }
-
-    start = () => this.gameObjects.forEach(item => item.start())
-    update = () => this.gameObjects.forEach(item => item.update())
-    render = (ctx) => this.gameObjects.forEach(item => item.render(ctx))
+    gameObjects = new GameCollection();
+    start = () => this.gameObjects.start();
+    update = (deltaTime) => this.gameObjects.update(deltaTime);
+    render = (ctx) => this.gameObjects.render(ctx);
 }

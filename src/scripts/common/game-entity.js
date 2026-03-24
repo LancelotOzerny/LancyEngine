@@ -1,4 +1,4 @@
-class GameActions
+class GameEntity
 {
     start() {}
     update(deltaTime) {}
