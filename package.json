@@ -1,0 +1,16 @@
+{
+  "name": "game-engine",
+  "version": "1.0.0",
+  "description": "Игровой движок на JavaScript + Canvas",
+  "scripts": {
+    "build": "gulp build",
+    "develop": "gulp develop"
+  },
+  "devDependencies": {
+    "browser-sync": "^3.0.4",
+    "del": "^7.0.0",
+    "gulp": "^5.0.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-uglify": "^3.0.2"
+  }
+}
