@@ -29,8 +29,12 @@ class Engine extends GameEntity
 
         this.context = this.canvas.getContext('2d');
 
-        if (this.options.width) this.canvas.setAttribute('width', this.options.width + 'px');
-        if (this.options.height) this.canvas.setAttribute('height', this.options.height + 'px');
+        this.options.width = this.options.width ?? 1000;
+        this.options.height = this.options.height ?? 1000;
+
+        this.canvas.setAttribute('width', this.options.width + 'px');
+        this.canvas.setAttribute('height', this.options.height + 'px');
+        this.assetLoader = new AssetLoader();
 
         return this;
     }
@@ -91,6 +95,7 @@ class Engine extends GameEntity
             this.elapsedTime -= this.frameTime;
         }
 
+        this.context.clearRect(0, 0, this.options.width, this.options.height);
         this.render(this.context);
         this.animationFrameId = requestAnimationFrame(this.#gameLoop.bind(this));
     }

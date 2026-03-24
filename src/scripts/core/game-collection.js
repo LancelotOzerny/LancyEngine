@@ -4,13 +4,13 @@ class GameCollection
 
     start = () => this.#items.forEach(item => item.start());
     update = (deltaTime) => this.#items.forEach(item => item.update(deltaTime));
-    render = (ctx) => this.#items.forEach(item => item.render());
+    render = (ctx) => this.#items.forEach(item => item.render(ctx));
 
     append(item)
     {
         if (this.contains(item) === false)
         {
-            this.#items.pop(item)
+            this.#items.push(item)
         }
     }
 
