@@ -16,6 +16,7 @@ class Engine extends GameEntity
         this.fps = 60;
         this.frameTime = 1000 / this.fps;
         this.elapsedTime = 0;
+        this.isInitialized = false;
 
         this.assetLoader = new AssetLoader();
         this.input = new InputSystem();
@@ -39,6 +40,7 @@ class Engine extends GameEntity
         this.canvas.setAttribute('height', this.options.height + 'px');
 
         this.scenes.init();
+        this.isInitialized = true;
     }
 
     startGameLoop()

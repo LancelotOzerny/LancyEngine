@@ -3,11 +3,20 @@ class GameObject extends GameEntity
     name = 'GameObject';
     components = new GameCollection();
 
+
+
     constructor()
     {
         super();
+
         this.transform = new TransformComponent();
         this.bindComponent(this.transform);
+
+        if (Engine.instance.isInitialized)
+        {
+            this.init();
+            this.start();
+        }
     }
 
     bindComponent(component)
