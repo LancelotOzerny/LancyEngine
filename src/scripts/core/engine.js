@@ -34,9 +34,10 @@ class Engine extends GameEntity
 
         this.canvas.setAttribute('width', this.options.width + 'px');
         this.canvas.setAttribute('height', this.options.height + 'px');
-        this.assetLoader = new AssetLoader();
 
-        console.log(this.scenes);
+        this.assetLoader = new AssetLoader();
+        this.input = new InputSystem();
+
         this.scenes.init();
         return this;
     }
@@ -102,7 +103,11 @@ class Engine extends GameEntity
     }
 
     start() { this.scenes.start(); }
-    update(deltaTime) { this.scenes.update(deltaTime) };
+    update(deltaTime)
+    {
+        this.scenes.update(deltaTime)
+        this.input.update();
+    };
     render(ctx) { this.scenes.render(ctx) };
 
     static get instance()
