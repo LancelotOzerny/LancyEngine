@@ -16,9 +16,12 @@ class Engine extends GameEntity
         this.fps = 60;
         this.frameTime = 1000 / this.fps;
         this.elapsedTime = 0;
+
+        this.assetLoader = new AssetLoader();
+        this.input = new InputSystem();
     }
 
-    init(selector, options)
+    init(selector, options = {})
     {
         this.options = options;
         this.canvas = document.querySelector(selector);
@@ -29,17 +32,13 @@ class Engine extends GameEntity
 
         this.context = this.canvas.getContext('2d');
 
-        this.options.width = this.options.width ?? 1000;
-        this.options.height = this.options.height ?? 1000;
+        this.options.width = this.options.width ?? 1920;
+        this.options.height = this.options.height ?? 1080;
 
         this.canvas.setAttribute('width', this.options.width + 'px');
         this.canvas.setAttribute('height', this.options.height + 'px');
 
-        this.assetLoader = new AssetLoader();
-        this.input = new InputSystem();
-
         this.scenes.init();
-        return this;
     }
 
     startGameLoop()
@@ -93,7 +92,7 @@ class Engine extends GameEntity
 
         while (this.elapsedTime >= this.frameTime)
         {
-            this.update(this.frameTime / 100);
+            this.update(this.frameTime / 1000);
             this.elapsedTime -= this.frameTime;
         }
 

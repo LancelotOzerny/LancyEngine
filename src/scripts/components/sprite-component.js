@@ -3,24 +3,17 @@ class SpriteComponent extends BaseComponent
     imageName = '';
     sprite = null;
 
-    get height()
-    {
-        return this.sprite.height;
-    }
+    get height() { return this.sprite.height; }
+    set height(value) { this.sprite.height = value; }
+    set width(value) { this.sprite.width = value; }
+    get width() { return this.sprite.width; }
 
-    set height(value)
-    {
-        this.sprite.height = value;
-    }
-
-    get width()
-    {
-        return this.sprite.width;
-    }
-
-    start()
+    init()
     {
         this.sprite = Engine.instance.assets.get(this.imageName);
+
+        if (this.params.width !== 'undefined') this.width = this.params.width;
+        if (this.params.height !== 'undefined') this.height = this.params.height;
     }
 
     render(ctx) {
@@ -35,5 +28,4 @@ class SpriteComponent extends BaseComponent
         ctx.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
         ctx.restore();
     }
-
 }
