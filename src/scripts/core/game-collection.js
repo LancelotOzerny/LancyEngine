@@ -2,6 +2,11 @@ class GameCollection
 {
     #items = [];
 
+    constructor(parent = null)
+    {
+        if (parent) this.parent = parent;
+    }
+
     init()
     {
         this.#items.forEach(item =>
@@ -48,7 +53,11 @@ class GameCollection
     {
         if (this.contains(item) === false)
         {
-            this.#items.push(item)
+            this.#items.push(item);
+            if (typeof(this.parent) !== 'undefined')
+            {
+                item.parent = this.parent;
+            }
         }
     }
 
@@ -57,6 +66,7 @@ class GameCollection
         if (this.contains(item))
         {
             this.#items.pop(item)
+            item.parent = this.parent ?? null;
         }
     }
 
