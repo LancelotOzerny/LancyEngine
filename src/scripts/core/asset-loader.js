@@ -2,7 +2,7 @@ class AssetLoader
 {
     constructor()
     {
-        this.assets = new Map(); // Хранилище загруженных ресурсов
+        this.assets = new Map();
         this.loadProgress = 0;
         this.totalAssets = 0;
         this.loadedAssets = 0;

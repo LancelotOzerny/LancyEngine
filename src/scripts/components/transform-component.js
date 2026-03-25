@@ -1,6 +1,7 @@
 class TransformComponent extends BaseComponent
 {
     position = new Vector2();
+    rotation = 0;
 
     setPosition(x, y)
     {
