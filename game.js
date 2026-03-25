@@ -16,10 +16,11 @@ class Hero extends GameObject
     init()
     {
         this.sprite = new SpriteComponent({
-            width: 200,
-            height: 200
+            sprite: 'sheep',
+            width: 256,
+            height: 256
         });
-        this.sprite.imageName = 'sheep'
+        this.sprite.color = 'rgba(255, 255, 0, 1)';
         this.bindComponent(this.sprite);
 
         super.init();
@@ -39,7 +40,6 @@ class Hero extends GameObject
 
     update(deltaTime)
     {
-        this.time += deltaTime;
         if (Engine.instance.input.isKeyDown('KeyD')) this.moveX = 1;
         else if (Engine.instance.input.isKeyDown('KeyA')) this.moveX = -1;
         else this.moveX = 0;

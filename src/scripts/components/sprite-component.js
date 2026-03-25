@@ -1,31 +1,72 @@
 class SpriteComponent extends BaseComponent
 {
-    imageName = '';
     sprite = null;
+    color = null;
+    alpha = 1;
+    blendMode = 'overlay';
 
-    get height() { return this.sprite.height; }
-    set height(value) { this.sprite.height = value; }
-    set width(value) { this.sprite.width = value; }
-    get width() { return this.sprite.width; }
+    width = 150;
+    height = 150;
+
+    get width() { return this.width; }
+    set width(value)
+    {
+        this.width = value;
+        if (this.sprite)
+        {
+            this.sprite.width = value;
+        }
+    }
+    get height() { return this.height; }
+    set height(value)
+    {
+        this.height = value;
+        if (this.sprite)
+        {
+            this.sprite.height = value;
+        }
+    }
 
     init()
     {
-        this.sprite = Engine.instance.assets.get(this.imageName);
+        if (this.params.sprite)
+        {
+            this.sprite = Engine.instance.assets.get(this.params.sprite);
+            this.width = this.sprite.width;
+            this.height = this.sprite.height;
+        }
 
-        if (this.params.width !== 'undefined') this.width = this.params.width;
-        if (this.params.height !== 'undefined') this.height = this.params.height;
+        this.width = this.params.width ?? this.width;
+        this.height = this.params.height ?? this.height;
     }
 
-    render(ctx) {
-        if (!this.sprite) return;
-
-        const x = this.parent.transform.position.x;
-        const y = this.parent.transform.position.y;
+    render(ctx)
+    {
+        let pos = this.parent.transform.position;
 
         ctx.save();
-        ctx.translate(x + this.width / 2, y + this.height / 2);
+        ctx.translate(pos.x + this.width / 2, pos.y + this.height / 2);
         ctx.rotate(this.parent.transform.rotation * Math.PI / 180);
-        ctx.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
+
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle = this.color;
+
+        if (this.sprite)
+        {
+            ctx.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
+
+            if (this.color)
+            {
+                ctx.save();
+                ctx.globalCompositeOperation = this.blendMode;
+                ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
+                ctx.restore();
+            }
+        }
+        else
+        {
+            ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
+        }
         ctx.restore();
     }
 }
