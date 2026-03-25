@@ -2,6 +2,17 @@ class GameCollection
 {
     #items = [];
 
+    init()
+    {
+        this.#items.forEach(item =>
+        {
+            if (typeof item.init === 'function')
+            {
+                item?.init()
+            }
+        })
+    }
+
     start()
     {
         this.#items.forEach(item =>

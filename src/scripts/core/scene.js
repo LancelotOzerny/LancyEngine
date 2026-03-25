@@ -4,4 +4,5 @@ class Scene extends GameEntity
     start() { this.gameObjects.start() }
     update(deltaTime) { this.gameObjects.update(deltaTime) }
     render(ctx) { this.gameObjects.render(ctx) }
+    init() { this.gameObjects.init() }
 }

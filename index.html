@@ -28,32 +28,42 @@
         .then(() => game.start());
     });
 
-    class Hero extends GameObject {}
+    class Hero extends GameObject
+    {
+        init()
+        {
+            console.log('init Hero!');
+
+            this.physic = new PhysicComponent();
+            this.physic.gravityScale = 1;
+            this.bindComponent(this.physic);
+
+            this.sprite = new SpriteComponent();
+            this.sprite.imageName = 'player'
+            this.bindComponent(this.sprite);
+        }
+    }
 
     class Game
     {
         init()
         {
-            this.engine = Engine.instance.init('#game-canvas', {
-                width: 1920,
-                height: 1080,
-            });
+            this.engine = Engine.instance;
 
             /* HERO SET */
             let hero = new Hero();
-
-            let physic = new PhysicComponent();
-            hero.bindComponent(physic);
-
-            let sprite = new SpriteComponent();
-            sprite.imageName = 'player'
-            hero.bindComponent(sprite);
 
             /* SCENE SET */
             let scene__main = new Scene();
             scene__main.gameObjects.append(hero);
 
+            console.log();
             this.engine.scenes.append(scene__main);
+
+            this.engine.init('#game-canvas', {
+                width: 1920,
+                height: 1080,
+            });
         }
 
         async loadAssets(assets = {

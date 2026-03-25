@@ -36,6 +36,8 @@ class Engine extends GameEntity
         this.canvas.setAttribute('height', this.options.height + 'px');
         this.assetLoader = new AssetLoader();
 
+        console.log(this.scenes);
+        this.scenes.init();
         return this;
     }
 
