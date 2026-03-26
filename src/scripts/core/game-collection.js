@@ -1,6 +1,6 @@
 class GameCollection
 {
-    #items = [];
+    items = [];
 
     constructor(parent = null)
     {
@@ -9,7 +9,7 @@ class GameCollection
 
     init()
     {
-        this.#items.forEach(item =>
+        this.items.forEach(item =>
         {
             if (typeof item.init === 'function')
             {
@@ -20,7 +20,7 @@ class GameCollection
 
     start()
     {
-        this.#items.forEach(item =>
+        this.items.forEach(item =>
         {
             if (typeof item.start === 'function')
             {
@@ -30,7 +30,7 @@ class GameCollection
     }
     update(deltaTime)
     {
-        this.#items.forEach(item =>
+        this.items.forEach(item =>
         {
             if (typeof item.update === 'function')
             {
@@ -40,7 +40,7 @@ class GameCollection
     }
     render(ctx)
     {
-        this.#items.forEach(item =>
+        this.items.forEach(item =>
         {
             if (typeof item.render === 'function')
             {
@@ -53,7 +53,7 @@ class GameCollection
     {
         if (this.contains(item) === false)
         {
-            this.#items.push(item);
+            this.items.push(item);
             if (typeof(this.parent) !== 'undefined')
             {
                 item.parent = this.parent;
@@ -65,20 +65,20 @@ class GameCollection
     {
         if (this.contains(item))
         {
-            this.#items.pop(item)
+            this.items.pop(item)
             item.parent = this.parent ?? null;
         }
     }
 
     getAll()
     {
-        return this.#items;
+        return this.items;
     }
 
-    contains = (item) => this.#items.indexOf(item) !== -1;
+    contains = (item) => this.items.indexOf(item) !== -1;
 
     get Count()
     {
-        return this.#items.length;
+        return this.items.length;
     }
 }

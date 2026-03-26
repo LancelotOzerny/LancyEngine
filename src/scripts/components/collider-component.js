@@ -5,8 +5,16 @@ class ColliderComponent extends BaseComponent
 
     init()
     {
-        this.params.width ??= 50;
-        this.params.height ??= 50;
+        let sprite = this.parent.findComponent(SpriteComponent);
+
+        if (sprite)
+        {
+            if (typeof(this.params.width) === 'undefined') this.params.width = sprite.width;
+            if (typeof(this.params.height) === 'undefined') this.params.height = sprite.height;
+        }
+
+        this.params.width ??= 150;
+        this.params.height ??= 150;
 
         CollisionSystem.instance.colliders.push(this);
     }
@@ -17,8 +25,6 @@ class ColliderComponent extends BaseComponent
         ctx.fillRect(this.parent.transform.position.x, this.parent.transform.position.y, this.params.width, this.params.height);
     }
 
-    static count = 0;
-
     checkCollision(collider2)
     {
         let info1 = this.getInfoForCheck();
@@ -28,27 +34,8 @@ class ColliderComponent extends BaseComponent
         let rightCollision = info1.posX <= info2.posX + info2.width;
         let topCollision = info1.posY + info1.height >= info2.posY;
         let bottomCollision = info1.posY <= info2.posY + info2.height;
-/*
 
-        if (++ColliderComponent.count % 1_000_0 === 0)
-        {
-            console.log({
-                info1: info1,
-                info2: info2,
-                collisions: {
-                    left: leftCollision,
-                    right: rightCollision,
-                }
-            })
-        }*/
-
-
-        if (leftCollision && rightCollision && topCollision && bottomCollision)
-        {
-            return true;
-        }
-
-        return false;
+        return leftCollision && rightCollision && topCollision && bottomCollision;
     }
 
     getInfoForCheck()

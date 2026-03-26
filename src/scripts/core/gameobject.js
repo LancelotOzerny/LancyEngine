@@ -25,6 +25,20 @@ class GameObject extends GameEntity
         this.components.append(component);
     }
 
+    findComponent(component)
+    {
+        let result = null;
+        this.components.items.forEach(item => {
+            if (item instanceof component)
+            {
+                result = item;
+                return item;
+            }
+
+        })
+        return result;
+    }
+
     start()
     {
         this.components.start();
@@ -32,9 +46,4 @@ class GameObject extends GameEntity
     update(deltaTime) { this.components.update(deltaTime) }
     render(ctx) { this.components.render(ctx) }
     init() { this.components.init() }
-
-    bindEvent(name, callback)
-    {
-        
-    }
 }

@@ -173,7 +173,10 @@ class Bullet extends GameObject
             height: 12
         });
         this.bindComponent(this.sprite);
-        this.bindComponent(new ColliderComponent());
+
+        this.collider = new ColliderComponent();
+        this.bindComponent(this.collider);
+
         super.init();
     }
 

@@ -46,8 +46,6 @@ class SpriteComponent extends BaseComponent
 
         this.width = this.params.width ?? this.width;
         this.height = this.params.height ?? this.height;
-
-        console.log(this.width);
     }
 
     render(ctx)
