@@ -70,6 +70,11 @@ class GameCollection
         }
     }
 
+    getAll()
+    {
+        return this.#items;
+    }
+
     contains = (item) => this.#items.indexOf(item) !== -1;
 
     get Count()

@@ -11,6 +11,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 });
 
+let enemyMoveDirection = 1;
+let newEnemyMoveDirection = 1;
+
 class Game
 {
     engine = Engine.instance;
@@ -21,8 +24,27 @@ class Game
         let hero = new Hero();
 
         /* SCENE SET */
-        let scene__main = new Scene();
+        let scene__main = new GameScene();
         scene__main.gameObjects.append(hero);
+
+
+        for (let i = 0; i < 1; ++i)
+        {
+            for (let j = 0; j < 4; ++j)
+            {
+                let enemy = new Enemy();
+
+                let enemyWidth = enemy.sprite.width + 15;
+                let enemyOffset = (1920 - 10 * enemyWidth) / 2;
+
+                enemy.transform.position.set(
+                    i * enemyWidth + enemyOffset,
+                    j * (enemy.sprite.height + 15) + 25
+                );
+
+                scene__main.gameObjects.append(enemy);
+            }
+        }
 
         this.engine.scenes.append(scene__main);
         this.engine.init('#game-canvas');
@@ -42,14 +64,23 @@ class Game
     }
 }
 
+class GameScene extends Scene
+{
+    update(deltaTime)
+    {
+        enemyMoveDirection = newEnemyMoveDirection;
+        super.update(deltaTime);
+    }
+}
+
 class Hero extends GameObject
 {
     init()
     {
         this.sprite = new SpriteComponent({
             sprite: 'sheep',
-            width: 256,
-            height: 256
+            width: 200,
+            height: 200
         });
         this.bindComponent(this.sprite);
 
@@ -94,6 +125,44 @@ class Hero extends GameObject
     }
 }
 
+class Enemy extends GameObject
+{
+    speed = 0;
+
+    constructor()
+    {
+        super();
+
+        this.sprite = new SpriteComponent({
+            width: 100,
+            height: 100
+        });
+        this.sprite.color = 'red';
+        this.bindComponent(this.sprite);
+        this.bindComponent(new ColliderComponent());
+    }
+
+    update()
+    {
+        this.transform.translate(enemyMoveDirection * 5, 0);
+
+        let posX = this.transform.position.x;
+        let spriteWidth = this.sprite.width;
+        let engineWidth = Engine.instance.canvas.width;
+
+        if (posX + spriteWidth >= engineWidth && enemyMoveDirection > 0)
+        {
+            newEnemyMoveDirection = -1;
+        }
+        else if (posX < 0 && enemyMoveDirection < 0)
+        {
+            newEnemyMoveDirection = 1;
+        }
+
+        super.update();
+    }
+}
+
 class Bullet extends GameObject
 {
     speed = 10;
@@ -104,6 +173,7 @@ class Bullet extends GameObject
             height: 12
         });
         this.bindComponent(this.sprite);
+        this.bindComponent(new ColliderComponent());
         super.init();
     }
 

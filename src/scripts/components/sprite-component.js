@@ -5,22 +5,30 @@ class SpriteComponent extends BaseComponent
     alpha = 1;
     blendMode = 'overlay';
 
-    width = 150;
-    height = 150;
+    _width = 150;
+    _height = 150;
 
-    get width() { return this.width; }
+    constructor(params = {})
+    {
+        super(params);
+
+        this.width = this.params.width ?? 150;
+        this.height = this.params.height ?? 150;
+    }
+
+    get width() { return this._width; }
     set width(value)
     {
-        this.width = value;
+        this._width = value;
         if (this.sprite)
         {
             this.sprite.width = value;
         }
     }
-    get height() { return this.height; }
+    get height() { return this._height; }
     set height(value)
     {
-        this.height = value;
+        this._height = value;
         if (this.sprite)
         {
             this.sprite.height = value;
@@ -32,12 +40,14 @@ class SpriteComponent extends BaseComponent
         if (this.params.sprite)
         {
             this.sprite = Engine.instance.assets.get(this.params.sprite);
-            this.width = this.sprite.width;
-            this.height = this.sprite.height;
+            this.width = this.params.width ?? this.sprite.width;
+            this.height = this.params.height ?? this.sprite.height;
         }
 
         this.width = this.params.width ?? this.width;
         this.height = this.params.height ?? this.height;
+
+        console.log(this.width);
     }
 
     render(ctx)

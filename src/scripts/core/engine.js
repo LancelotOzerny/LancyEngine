@@ -98,6 +98,7 @@ class Engine extends GameEntity
             this.elapsedTime -= this.frameTime;
         }
 
+        CollisionSystem.instance.updateCollisions();
         this.context.clearRect(0, 0, this.options.width, this.options.height);
         this.render(this.context);
         this.animationFrameId = requestAnimationFrame(this.#gameLoop.bind(this));
