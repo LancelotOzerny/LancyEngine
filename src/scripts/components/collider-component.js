@@ -3,6 +3,11 @@ class ColliderComponent extends BaseComponent
     get isCollision() { return this.collisions.length }
     collisions = [];
 
+    get collision()
+    {
+        return this.collisions.length === 0 ? null : this.collisions[0];
+    }
+
     init()
     {
         let sprite = this.parent.findComponent(SpriteComponent);
@@ -16,7 +21,7 @@ class ColliderComponent extends BaseComponent
         this.params.width ??= 150;
         this.params.height ??= 150;
 
-        CollisionSystem.instance.colliders.push(this);
+        CollisionSystem.instance.append(this);
     }
 
     render(ctx)
@@ -46,5 +51,12 @@ class ColliderComponent extends BaseComponent
             width: this.params.width,
             height: this.params.height,
         }
+    }
+
+    destroy()
+    {
+        console.log('Destoy Collision')
+        CollisionSystem.instance.remove(this);
+        super.destroy();
     }
 }

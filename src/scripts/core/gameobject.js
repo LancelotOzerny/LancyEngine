@@ -46,4 +46,10 @@ class GameObject extends GameEntity
     update(deltaTime) { this.components.update(deltaTime) }
     render(ctx) { this.components.render(ctx) }
     init() { this.components.init() }
+    destroy()
+    {
+        this.components.destroy();
+        this.parent.gameObjects.remove(this);
+        super.destroy();
+    }
 }
