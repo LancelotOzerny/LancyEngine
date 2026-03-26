@@ -14,6 +14,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 let enemyMoveDirection = 1;
 let newEnemyMoveDirection = 1;
 
+let score = 0;
+
+let ui = new UiPanel();
+let scoreText = ui.createText({
+    anchors: 'left bottom',
+    x: 50,
+    y: 50,
+    text: 'Счет: ' + score,
+    additionalClasses: 'title upper warning'
+})
+
 class Game
 {
     engine = Engine.instance;
@@ -28,7 +39,7 @@ class Game
         scene__main.gameObjects.append(hero);
 
 
-        for (let i = 0; i < 1; ++i)
+        for (let i = 0; i < 10; ++i)
         {
             for (let j = 0; j < 4; ++j)
             {
@@ -182,6 +193,14 @@ class Bullet extends GameObject
 
     update(deltaTime)
     {
+        if (this.collider.isCollision)
+        {
+            this.collider.collision.parent.destroy();
+            this.destroy();
+            scoreText.text = `Счет: ${++score}`;
+            return;
+        }
+
         this.transform.translate(0, -this.speed);
         super.update(deltaTime);
     }
