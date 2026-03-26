@@ -12,21 +12,18 @@ class CollisionSystem
                 let collisions1 = this.colliders[i].collisions;
                 let collisions2 = this.colliders[j].collisions;
 
+                let index1 = collisions1.indexOf(this.colliders[j]);
+                let index2 = collisions2.indexOf(this.colliders[i]);
+
                 if (this.colliders[i].checkCollision(this.colliders[j]))
                 {
-                    collisions1.push(this.colliders[j]);
-                    collisions2.push(this.colliders[i]);
+                    if (index1 === -1) collisions1.push(this.colliders[j]);
+                    if (index2 === -1) collisions2.push(this.colliders[i]);
                 }
                 else
                 {
-                    if (collisions1.indexOf(this.colliders[j]) !== -1)
-                    {
-                        collisions1.pop(this.colliders[j]);
-                    }
-                    if (collisions2.indexOf(this.colliders[i]) !== -1)
-                    {
-                        collisions2.pop(this.colliders[i]);
-                    }
+                    if (index1 !== -1) collisions1.splice(index1);
+                    if (index2 !== -1) collisions2.splice(index2);
                 }
             }
         }

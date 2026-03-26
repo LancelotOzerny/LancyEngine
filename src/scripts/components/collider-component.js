@@ -49,7 +49,6 @@ class ColliderComponent extends BaseComponent
 
     destroy()
     {
-        console.log('Destoy Collision')
         CollisionSystem.instance.remove(this);
         super.destroy();
     }
