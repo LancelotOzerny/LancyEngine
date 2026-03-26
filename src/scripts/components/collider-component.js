@@ -24,12 +24,6 @@ class ColliderComponent extends BaseComponent
         CollisionSystem.instance.append(this);
     }
 
-    render(ctx)
-    {
-        ctx.fillStyle = this.isCollision ? 'green' : 'blue';
-        ctx.fillRect(this.parent.transform.position.x, this.parent.transform.position.y, this.params.width, this.params.height);
-    }
-
     checkCollision(collider2)
     {
         let info1 = this.getInfoForCheck();

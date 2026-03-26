@@ -2,7 +2,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     let game = new Game();
     game.loadAssets({
         images: [
-            'assets/sprites/sheep.webp',
+            'assets/sprites/sheep.png',
+            'assets/sprites/background.webp',
+            'assets/sprites/enemy.png',
         ]
     })
         .then(() => {
@@ -31,11 +33,19 @@ class Game
 
     init()
     {
+        let background = new GameObject();
+        background.bindComponent(new SpriteComponent({
+            sprite: 'background',
+            width: 1920,
+            height: 1080
+        }));
+
         /* HERO SET */
         let hero = new Hero();
 
         /* SCENE SET */
         let scene__main = new GameScene();
+        scene__main.gameObjects.append(background);
         scene__main.gameObjects.append(hero);
 
 
@@ -145,10 +155,10 @@ class Enemy extends GameObject
         super();
 
         this.sprite = new SpriteComponent({
-            width: 100,
-            height: 100
+            sprite: 'enemy',
+            width: 125,
+            height: 125
         });
-        this.sprite.color = 'red';
         this.bindComponent(this.sprite);
         this.bindComponent(new ColliderComponent());
     }
@@ -176,13 +186,14 @@ class Enemy extends GameObject
 
 class Bullet extends GameObject
 {
-    speed = 10;
+    speed = 25;
     init()
     {
         this.sprite = new SpriteComponent({
             width: 6,
             height: 12
         });
+        this.sprite.color = 'yellow';
         this.bindComponent(this.sprite);
 
         this.collider = new ColliderComponent();
