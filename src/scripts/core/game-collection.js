@@ -18,6 +18,17 @@ class GameCollection
         })
     }
 
+    destroy()
+    {
+        this.items.forEach(item =>
+        {
+            if (typeof item.destroy === 'function')
+            {
+                item?.destroy()
+            }
+        })
+    }
+
     start()
     {
         this.items.forEach(item =>
@@ -63,16 +74,8 @@ class GameCollection
 
     remove(item)
     {
-        if (this.contains(item))
-        {
-            this.items.pop(item)
-            item.parent = this.parent ?? null;
-        }
-    }
-
-    getAll()
-    {
-        return this.items;
+        const index = this.items.indexOf(item);
+        if (index !== -1) this.items.splice(index, 1);
     }
 
     contains = (item) => this.items.indexOf(item) !== -1;

@@ -31,4 +31,25 @@ class CollisionSystem
             }
         }
     }
+
+    append(collider)
+    {
+        if (this.contain(collider))
+        {
+            return;
+        }
+
+        this.colliders.push(collider);
+    }
+
+    remove(collider)
+    {
+        const index = this.colliders.indexOf(collider);
+        if (index !== -1) this.colliders.splice(index, 1);
+    }
+
+    contain(collider)
+    {
+        return this.colliders.indexOf(collider) !== -1;
+    }
 }
