@@ -11,7 +11,10 @@ class UiElement
         this.options = options;
         this.ui_panel = panel;
         this.html = document.createElement(this.options.selector ?? 'div');
-        this.html.classList = this.options.baseClass ?? '';
+        this.options.additionalClasses = this.options.additionalClasses ?? '';
+        this.options.baseClass = this.options.baseClass ?? '';
+        this.html.classList = `${this.options.baseClass} ${this.options.additionalClasses}`;
+
         this.ui_panel.getHtml().append(this.html);
 
         this.setAnchors(this.options.anchors ?? 'center center');
