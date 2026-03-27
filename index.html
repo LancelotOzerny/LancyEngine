@@ -68,7 +68,14 @@
             }
         }
 
-        Engine.instance.init('#game-canvas');
+        Engine.instance.init('#game-canvas', {
+            width: 1920,
+            height: 1080,
+            screenMode: 'expand',
+            fitToWindow: true,
+            autoResize: true,
+            backgroundColor: '#FAFAFA',
+        });
         Engine.instance.startGameLoop();
     });
 </script>
