@@ -5,41 +5,59 @@ class InputSystem
         this.keys = new Set();
         this.pressedKeys = new Set();
         this.releasedKeys = new Set();
-
         this.init();
     }
 
     init()
     {
-        window.addEventListener('keydown', (e) =>
+        const blockedKeys = new Set([
+            "Space",
+            "ArrowLeft",
+            "ArrowRight",
+            "ArrowUp",
+            "ArrowDown"
+        ]);
+
+        window.addEventListener("keydown", (event) =>
         {
-            if (!this.keys.has(e.code))
+            if (blockedKeys.has(event.code))
             {
-                this.pressedKeys.add(e.code);
+                event.preventDefault();
             }
-            this.keys.add(e.code);
+
+            if (!this.keys.has(event.code))
+            {
+                this.pressedKeys.add(event.code);
+            }
+
+            this.keys.add(event.code);
         });
 
-        window.addEventListener('keyup', (e) =>
+        window.addEventListener("keyup", (event) =>
         {
-            this.releasedKeys.add(e.code);
-            this.keys.delete(e.code);
+            if (blockedKeys.has(event.code))
+            {
+                event.preventDefault();
+            }
+
+            this.releasedKeys.add(event.code);
+            this.keys.delete(event.code);
         });
     }
 
-    isKeyDown(keyCode)
+    isKeyDown(code)
     {
-        return this.keys.has(keyCode);
+        return this.keys.has(code);
     }
 
-    isKeyPressed(keyCode)
+    isKeyPressed(code)
     {
-        return this.pressedKeys.has(keyCode);
+        return this.pressedKeys.has(code);
     }
 
-    isKeyReleased(keyCode)
+    isKeyReleased(code)
     {
-        return this.releasedKeys.has(keyCode);
+        return this.releasedKeys.has(code);
     }
 
     update()
