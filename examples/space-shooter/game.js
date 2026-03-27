@@ -33,14 +33,7 @@ class Game
 
     init()
     {
-        let background = new GameObject();
-        background.bindComponent(new SpriteComponent({
-            sprite: 'background',
-            width: 1920,
-            height: 1080
-        }));
-
-        /* HERO SET */
+        let background = new Background();
         let hero = new Hero();
 
         /* SCENE SET */
@@ -85,6 +78,44 @@ class Game
     }
 }
 
+class Background extends GameObject {
+    init() {
+        this.baseWidth = 1920;
+        this.baseHeight = 1080;
+
+        this.sprite = new SpriteComponent({
+            sprite: "background",
+            width: this.baseWidth,
+            height: this.baseHeight,
+        });
+
+        this.bindComponent(this.sprite);
+        super.init();
+    }
+
+    update() {
+        const engine = Engine.instance;
+
+        const scale = Math.max(
+            engine.viewWidth / this.baseWidth,
+            engine.viewHeight / this.baseHeight
+        );
+
+        this.sprite.width = this.baseWidth * scale;
+        this.sprite.height = this.baseHeight * scale;
+
+        const viewLeft = engine.camera.x - engine.worldOffset.x;
+        const viewTop = engine.camera.y - engine.worldOffset.y;
+
+        this.transform.position.set(
+            viewLeft + (engine.viewWidth - this.sprite.width) / 2,
+            viewTop + (engine.viewHeight - this.sprite.height) / 2
+        );
+
+        super.update();
+    }
+}
+
 class GameScene extends Scene
 {
     update(deltaTime)
@@ -96,6 +127,9 @@ class GameScene extends Scene
 
 class Hero extends GameObject
 {
+    moveSpeed = 1_000;
+    moveX = 0;
+
     init()
     {
         this.sprite = new SpriteComponent({
@@ -108,20 +142,23 @@ class Hero extends GameObject
         super.init();
     }
 
-    moveSpeed = 1_000;
-    moveX = 0;
-
     start()
     {
         super.start();
+
+        const engine = Engine.instance;
+
         this.transform.position.set(
-            Engine.instance.canvas.width / 2 - this.sprite.width / 2,
-            Engine.instance.canvas.height - this.sprite.height - 50
-        )
+            engine.designWidth / 2 - this.sprite.width / 2,
+            engine.designHeight - this.sprite.height - 50
+        );
     }
 
     update(deltaTime)
     {
+        const engine = Engine.instance;
+        const maxX = engine.designWidth - this.sprite.width;
+
         if (Engine.instance.input.isKeyDown('KeyD')) this.moveX = 1;
         else if (Engine.instance.input.isKeyDown('KeyA')) this.moveX = -1;
         else this.moveX = 0;
@@ -136,9 +173,10 @@ class Hero extends GameObject
             this.parent.gameObjects.append(bullet);
         }
 
-        if (this.transform.position.x > Engine.instance.options.width - this.sprite.width && this.moveX > 0 ||
-            this.transform.position.x < 0 && this.moveX < 0)
-        {
+        if (
+            (this.transform.position.x >= maxX && this.moveX > 0) ||
+            (this.transform.position.x <= 0 && this.moveX < 0)
+        ) {
             this.moveX = 0;
         }
 
@@ -163,30 +201,30 @@ class Enemy extends GameObject
         this.bindComponent(new ColliderComponent());
     }
 
-    update()
+    update(deltaTime)
     {
         this.transform.translate(enemyMoveDirection * 5, 0);
 
         let posX = this.transform.position.x;
         let spriteWidth = this.sprite.width;
-        let engineWidth = Engine.instance.canvas.width;
+        let engineWidth = Engine.instance.designWidth;
 
         if (posX + spriteWidth >= engineWidth && enemyMoveDirection > 0)
         {
             newEnemyMoveDirection = -1;
         }
-        else if (posX < 0 && enemyMoveDirection < 0)
+        else if (posX <= 0 && enemyMoveDirection < 0)
         {
             newEnemyMoveDirection = 1;
         }
 
-        super.update();
+        super.update(deltaTime);
     }
 }
 
 class Bullet extends GameObject
 {
-    speed = 25;
+    speed = 10;
     init()
     {
         this.sprite = new SpriteComponent({
