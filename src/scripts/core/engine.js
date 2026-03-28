@@ -13,6 +13,7 @@ class Engine extends GameEntity
         this.isRunning = false;
         this.isFirstRunning = false;
         this.animationFrameId = null;
+        this.activeCameraComponent = null;
 
         this.lastTime = 0;
         this.fps = 60;
@@ -285,7 +286,8 @@ class Engine extends GameEntity
         this.scenes.render(ctx);
     }
 
-    renderFrame() {
+    renderFrame()
+    {
         const ctx = this.context;
         if (!ctx) return;
 
@@ -296,7 +298,8 @@ class Engine extends GameEntity
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        if (this.backgroundColor !== null) {
+        if (this.backgroundColor !== null)
+        {
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             ctx.fillStyle = this.backgroundColor;
             ctx.fillRect(0, 0, this.screenWidth, this.screenHeight);
@@ -305,7 +308,8 @@ class Engine extends GameEntity
         let screenOffsetX = 0;
         let screenOffsetY = 0;
 
-        if (this.screenMode === "contain") {
+        if (this.screenMode === "contain")
+        {
             screenOffsetX = (this.screenWidth - this.designWidth * this.scale) / 2;
             screenOffsetY = (this.screenHeight - this.designHeight * this.scale) / 2;
         }
@@ -340,5 +344,19 @@ class Engine extends GameEntity
         }
 
         return Engine.#instance;
+    }
+    getViewRect()
+    {
+        const left = this.camera.x - this.worldOffset.x;
+        const top = this.camera.y - this.worldOffset.y;
+
+        return {
+            left,
+            top,
+            right: left + this.viewWidth,
+            bottom: top + this.viewHeight,
+            width: this.viewWidth,
+            height: this.viewHeight,
+        };
     }
 }
