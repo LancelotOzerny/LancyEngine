@@ -5,7 +5,7 @@ class UiElement
 
     constructor(panel, options = {
         selector: 'div',
-        anchor: 'center center',
+        anchors: 'center center',
     })
     {
         this.options = options;

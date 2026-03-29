@@ -5,7 +5,7 @@ class UiPanel
     constructor(name)
     {
         this.html = document.createElement('div');
-        this.html.className = 'ui-panel.less';
+        this.html.className = 'ui-panel';
         this.html.id = name;
         document.body.append(this.html);
     }
