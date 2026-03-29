@@ -55,4 +55,6 @@ class UiPanel extends UiElement
     {
         this.html.style.backgroundColor = value;
     }
+
+    set index(value) { this.html.style.zIndex = value; }
 }
