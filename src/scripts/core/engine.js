@@ -26,7 +26,7 @@ class Engine extends GameEntity
         this.assets = this.assetLoader.assets; // совместимость со SpriteComponent
         this.input = new InputSystem();
 
-        this.options = {};
+        this.params = {};
 
         // Базовое "дизайнерское" разрешение
         this.designWidth = 1920;
@@ -71,8 +71,8 @@ class Engine extends GameEntity
         this._onResize = this.resize.bind(this);
     }
 
-    init(selector, options = {}) {
-        this.options = options;
+    init(selector, params = {}) {
+        this.params = params;
 
         this.canvas = document.querySelector(selector);
         if (!this.canvas) {
@@ -84,21 +84,21 @@ class Engine extends GameEntity
             throw new Error("2D context is not available!");
         }
 
-        this.designWidth = options.width ?? 1920;
-        this.designHeight = options.height ?? 1080;
+        this.designWidth = params.width ?? 1920;
+        this.designHeight = params.height ?? 1080;
 
         this.viewWidth = this.designWidth;
         this.viewHeight = this.designHeight;
 
-        this.backgroundColor = options.backgroundColor ?? "#000000";
-        this.screenMode = options.screenMode ?? "expand";
-        this.fitToWindow = options.fitToWindow ?? true;
-        this.autoResize = options.autoResize ?? true;
-        this.centerView = options.centerView ?? true;
-        this.pixelArt = options.pixelArt ?? false;
-        this.maxDeltaTime = options.maxDeltaTime ?? 100;
+        this.backgroundColor = params.backgroundColor ?? "#000000";
+        this.screenMode = params.screenMode ?? "expand";
+        this.fitToWindow = params.fitToWindow ?? true;
+        this.autoResize = params.autoResize ?? true;
+        this.centerView = params.centerView ?? true;
+        this.pixelArt = params.pixelArt ?? false;
+        this.maxDeltaTime = params.maxDeltaTime ?? 100;
 
-        this.camera.set(options.cameraX ?? 0, options.cameraY ?? 0);
+        this.camera.set(params.cameraX ?? 0, params.cameraY ?? 0);
 
         this.context.imageSmoothingEnabled = !this.pixelArt;
 

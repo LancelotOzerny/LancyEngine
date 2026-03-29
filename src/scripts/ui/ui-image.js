@@ -1,27 +1,27 @@
 class UiImage extends UiElement
 {
-    constructor(panel, options = {})
+    constructor(panel, params = {})
     {
         super(panel, {
             selector: 'img',
             baseClass: 'ui-image',
-            ...options
+            ...params
         });
 
-        this.width = this.options.width ?? '150';
-        this.height = this.options.height ?? '150';
-        this.html.setAttribute('src', this.options.src ?? 'none');
+        this.width = this.params.width ?? '150';
+        this.height = this.params.height ?? '150';
+        this.html.setAttribute('src', this.params.src ?? 'none');
     }
 
     set width(value)
     {
-        this.options.width = value;
+        this.params.width = value;
         this.html.style.width = value + 'px';
     }
 
     set height(value)
     {
-        this.options.height = value;
+        this.params.height = value;
         this.html.style.height = value + 'px';
     }
 }

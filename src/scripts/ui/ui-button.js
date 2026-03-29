@@ -1,15 +1,15 @@
 class UiButton extends UiTextElement
 {
-    constructor(panel, options)
+    constructor(panel, params)
     {
         super(panel, {
             selector: 'button',
             baseClass: 'ui-btn',
-            ...options
+            ...params
         });
 
-        this.setClickAction(this.options.click ?? (()  => { console.log('Click!') }))
-        this.html.textContent = this.options.text ?? 'Button';
+        this.setClickAction(this.params.click ?? (()  => { console.log('Click!') }))
+        this.html.textContent = this.params.text ?? 'Button';
     }
 
     setClickAction(callback)

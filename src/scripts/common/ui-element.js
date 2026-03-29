@@ -3,22 +3,45 @@ class UiElement
     x = 0;
     y = 0;
 
-    constructor(panel, options = {
+    constructor(panel, params = {
         selector: 'div',
         anchors: 'center center',
     })
     {
-        this.options = options;
-        this.ui_panel = panel;
-        this.html = document.createElement(this.options.selector ?? 'div');
-        this.options.additionalClasses = this.options.additionalClasses ?? '';
-        this.options.baseClass = this.options.baseClass ?? '';
-        this.html.classList = `${this.options.baseClass} ${this.options.additionalClasses}`;
+        this.params = params;
 
-        this.ui_panel.getHtml().append(this.html);
+        this.html = document.createElement(this.params.selector ?? 'div');
+        this.params.additionalClasses = this.params.additionalClasses ?? '';
+        this.params.baseClass = this.params.baseClass ?? '';
+        this.html.classList = `${this.params.baseClass} ${this.params.additionalClasses}`;
 
-        this.setAnchors(this.options.anchors ?? 'center center');
-        this.setPosition(this.options.x ?? 0, this.options.y ?? 0);
+        this.active = true;
+        this.visible = true;
+
+        this.setAnchors(this.params.anchors ?? 'center center');
+        this.setPosition(this.params.x ?? 0, this.params.y ?? 0);
+
+        if (panel)
+        {
+            this.ui_panel = panel;
+            this.ui_panel.html.append(this.html);
+        }
+    }
+
+    _active = true;
+    get active() { return this._active; }
+    set active(value)
+    {
+        this._active = value;
+        this.html.style.display = this.active ? 'block' : 'hidden';
+    }
+
+    _visible = true;
+    get visible() { return this._visible; }
+    set visible(value)
+    {
+        this._visible = value;
+        this.html.style.opacity = this._visible ? 1 : 0;
     }
 
     setPosition(x, y)
@@ -60,4 +83,6 @@ class UiElement
             vertical: anchorVert
         }
     }
+
+    getHtml = () => this.html;
 }

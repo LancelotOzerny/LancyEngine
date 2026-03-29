@@ -1,13 +1,13 @@
 class UiText extends UiTextElement
 {
-    constructor(panel, options = {})
+    constructor(panel, params = {})
     {
         super(panel, {
             selector: 'p',
             baseClass: 'ui-text',
-            ...options
+            ...params
         });
 
-        this.html.textContent = this.options.text ?? 'Simple Text';
+        this.html.textContent = this.params.text ?? 'Simple Text';
     }
 }
