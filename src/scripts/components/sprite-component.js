@@ -4,34 +4,26 @@ class SpriteComponent extends BaseComponent
     color = null;
     alpha = 1;
     blendMode = "overlay";
-    _width = 150;
-    _height = 150;
+    _size = new Vector2(150, 150);
+    _offset = new Vector2(0, 0);
+
     constructor(params = {})
     {
         super(params);
-        this._width = this.params.width ?? 150;
-        this._height = this.params.height ?? 150;
+        this._size.x = this.params.width ?? 150;
+        this._size.y = this.params.height ?? 150;
     }
-    get
-    width()
-    {
-        return this._width;
-    }
-    set
-    width(value)
-    {
-        this._width = value;
-    }
-    get
-    height()
-    {
-        return this._height;
-    }
-    set
-    height(value)
-    {
-        this._height = value;
-    }
+
+    get width() { return this._size.x;}
+    set width(value) { this._size.x = value; }
+    get height() { return this._size.y; }
+    set height(value) { this._size.y = value; }
+
+    set offsetX(value) { this._offset.x = value; }
+    set offsetY(value) { this._offset.y = value; }
+    get offsetX() { return this._offset.x; }
+    get offsetY() { return this._offset.y; }
+
     init()
     {
         if (this.params.sprite)
@@ -42,18 +34,22 @@ class SpriteComponent extends BaseComponent
                 throw new Error(`Sprite asset "${this.params.sprite}" not found in Engine.instance.assets`);
             }
             this.sprite = asset;
-            this._width = this.params.width ?? asset.naturalWidth ?? asset.width ?? 150;
-            this._height = this.params.height ?? asset.naturalHeight ?? asset.height ?? 150;
+            this._size.x = this.params.width ?? asset.naturalWidth ?? asset.width ?? 150;
+            this._size.y = this.params.height ?? asset.naturalHeight ?? asset.height ?? 150;
+
+            return;
         }
-        else
-        {
-            this._width = this.params.width ?? this._width;
-            this._height = this.params.height ?? this._height;
-        }
+
+        this._size.x = this.params.width ?? this._size.x;
+        this._size.y = this.params.height ?? this._size.y;
     }
     render(ctx)
     {
-        const pos = this.parent.transform.position;
+        const pos = new Vector2(
+            this.parent.transform.position.x + this._offset.x,
+            this.parent.transform.position.y + this._offset.y
+        );
+
         ctx.save();
         ctx.translate(pos.x + this.width / 2, pos.y + this.height / 2);
         ctx.rotate(this.parent.transform.rotation * Math.PI / 180);
@@ -75,6 +71,7 @@ class SpriteComponent extends BaseComponent
             ctx.fillStyle = this.color ?? "#ff00ff";
             ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
         }
+
         ctx.restore();
     }
 }
