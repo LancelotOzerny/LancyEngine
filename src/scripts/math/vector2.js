@@ -13,4 +13,11 @@ class Vector2
         this.x = x;
         this.y = y;
     }
+
+    add(vector2)
+    {
+        this.x += vector2.x;
+        this.y += vector2.y;
+        return this;
+    }
 }

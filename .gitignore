@@ -1,3 +1,6 @@
 .idea/
 engine/
 node_modules/
+
+index.html
+gameClasses.js
