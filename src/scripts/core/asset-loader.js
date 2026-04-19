@@ -17,7 +17,6 @@ class AssetLoader
 
         return Promise.all(promises).then(images =>
         {
-            // Создаём Map с ключами по именам файлов
             const result = new Map();
             imagePaths.forEach((path, index) =>
             {

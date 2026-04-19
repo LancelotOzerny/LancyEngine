@@ -216,7 +216,7 @@ class Engine extends GameEntity
         this.updateView();
     }
 
-    startGameLoop() {
+    #startGameLoop() {
         if (this.isRunning) {
             console.warn("Игровой цикл уже запущен");
             return;
@@ -345,6 +345,22 @@ class Engine extends GameEntity
 
         return Engine.#instance;
     }
+
+    async prepareData(data = {
+        images: []
+    })
+    {
+        this.assets = await this.assetLoader.loadImages(this.data?.images ?? [])
+    }
+
+    async run(prepareFunc, data)
+    {
+        await this.prepareData(data).then(() => {
+            prepareFunc();
+            Engine.instance.#startGameLoop();
+        });
+    }
+
     getViewRect()
     {
         const left = this.camera.x - this.worldOffset.x;

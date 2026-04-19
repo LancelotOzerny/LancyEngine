@@ -16,68 +16,33 @@
 <script src="engine/ui.min.js"></script>
 
 <script src="gameClasses.js"></script>
+
 <script>
-    const sceneMap = [
-        '10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-        '10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-        '10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-        '10000000000000000000000000000000000111000000000000000000000000000000000000000000000000000000000',
-        '10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-        '10000000000000000000000000011100000000000000000000000000000000000000000000000000000000000000000',
-        '10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-        '10000000000000000000000000000000001110000000000000000000000000000000000000000000000000000000000',
-        '10000000000011100000000111000000000000000111000000000000000000000000000000000000000000000000000',
-        '10000000000000000000000000000000000000000000000000000000000011110000000000000000000000000000000',
-        '11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111',
-    ];
+    document.addEventListener('DOMContentLoaded', async () =>
+    {
+        await Engine.instance.run(prepare, {
+            images: ['examples/space-shooter/assets/sprites/enemy.png']
+        })
+    })
 
-    const params = {
-        blockSize: 100
-    }
+    function prepare()
+    {
+        let mainMenuScene = new Scene();
+        Engine.instance.scenes.append(mainMenuScene);
 
-    document.addEventListener('DOMContentLoaded', () => {
-        let scene = new Scene();
-        Engine.instance.scenes.append(scene);
+        let player = new GameObject();
+        player.sprite = new SpriteComponent({
+            sprite: 'enemy'
+        });
+        player.bindComponent(player.sprite);
+        mainMenuScene.gameObjects.append(player)
 
-        let player = new Player();
-        scene.gameObjects.append(player);
-
-        for (let i = 0; i < sceneMap.length; ++i)
-        {
-            for (let j = 0; j < sceneMap[i].length; ++j)
-            {
-                let block = null;
-
-                switch (sceneMap[i][j])
-                {
-                    case '1':
-                        block = new GroundBlock();
-                        block.bindComponent(new ColliderComponent());
-                        break;
-
-                    default:
-                        continue;
-                }
-
-                block.transform.position.set(
-                    j * params.blockSize,
-                    i * params.blockSize
-                );
-
-                scene.gameObjects.append(block);
-            }
-        }
-
-        Engine.instance.init('#game-canvas', {
+        Engine.instance.init("#game-canvas", {
             width: 1920,
             height: 1080,
-            screenMode: 'expand',
-            fitToWindow: true,
-            autoResize: true,
-            backgroundColor: '#FAFAFA',
+            backgroundColor: "#333",
         });
-        Engine.instance.startGameLoop();
-    });
+    }
 </script>
 </body>
 </html>
