@@ -4,7 +4,8 @@ class Engine extends GameEntity
 
     scenes = new GameCollection();
 
-    constructor() {
+    constructor()
+    {
         super();
 
         this.canvas = null;
@@ -23,7 +24,10 @@ class Engine extends GameEntity
         this.isInitialized = false;
 
         this.assetLoader = new AssetLoader();
-        this.assets = this.assetLoader.assets; // совместимость со SpriteComponent
+        this.assets = this.assetLoader.assets; // compatibility with SpriteComponent
+        this.audioAssets = this.assetLoader.audio;
+        this.audioManager = new AudioManager();
+        this.audio = this.audioManager;
         this.input = new InputSystem();
 
         this.params = {};
@@ -71,16 +75,19 @@ class Engine extends GameEntity
         this._onResize = this.resize.bind(this);
     }
 
-    init(selector, params = {}) {
+    init(selector, params = {})
+    {
         this.params = params;
 
         this.canvas = document.querySelector(selector);
-        if (!this.canvas) {
+        if (!this.canvas)
+        {
             throw new Error(`Canvas with selector ${selector} is not found!`);
         }
 
         this.context = this.canvas.getContext("2d");
-        if (!this.context) {
+        if (!this.context)
+        {
             throw new Error("2D context is not available!");
         }
 
@@ -102,11 +109,13 @@ class Engine extends GameEntity
 
         this.context.imageSmoothingEnabled = !this.pixelArt;
 
-        if (this.pixelArt) {
+        if (this.pixelArt)
+        {
             this.canvas.style.imageRendering = "pixelated";
         }
 
-        if (this.fitToWindow) {
+        if (this.fitToWindow)
+        {
             this.canvas.style.display = "block";
             this.canvas.style.margin = "0";
             this.canvas.style.padding = "0";
@@ -114,7 +123,8 @@ class Engine extends GameEntity
 
         this.resize();
 
-        if (this.autoResize) {
+        if (this.autoResize)
+        {
             window.addEventListener("resize", this._onResize);
         }
 
@@ -122,16 +132,20 @@ class Engine extends GameEntity
         this.isInitialized = true;
     }
 
-    resize() {
+    resize()
+    {
         if (!this.canvas || !this.context) return;
 
         let cssWidth;
         let cssHeight;
 
-        if (this.fitToWindow) {
+        if (this.fitToWindow)
+        {
             cssWidth = window.innerWidth;
             cssHeight = window.innerHeight;
-        } else {
+        }
+        else
+        {
             const rect = this.canvas.getBoundingClientRect();
             cssWidth = rect.width || this.designWidth;
             cssHeight = rect.height || this.designHeight;
@@ -141,19 +155,21 @@ class Engine extends GameEntity
         this.screenHeight = Math.max(1, Math.round(cssHeight));
         this.devicePixelRatio = window.devicePixelRatio || 1;
 
-        // Реальный размер backbuffer
+        // Real backbuffer size
         this.canvas.width = Math.max(1, Math.round(this.screenWidth * this.devicePixelRatio));
         this.canvas.height = Math.max(1, Math.round(this.screenHeight * this.devicePixelRatio));
 
-        // CSS-размер canvas
+        // CSS size
         this.canvas.style.width = `${this.screenWidth}px`;
         this.canvas.style.height = `${this.screenHeight}px`;
 
         this.updateView();
     }
 
-    updateView() {
-        if (this.screenMode === "contain") {
+    updateView()
+    {
+        if (this.screenMode === "contain")
+        {
             this.scale = Math.min(
                 this.screenWidth / this.designWidth,
                 this.screenHeight / this.designHeight
@@ -167,58 +183,68 @@ class Engine extends GameEntity
             return;
         }
 
-        // Основной режим:
-        // фиксируем высоту дизайна, а ширину мира меняем под aspect ratio окна
+        // Main mode: fixed design height + variable visible width
         this.scale = this.screenHeight / this.designHeight;
         this.viewHeight = this.designHeight;
         this.viewWidth = this.screenWidth / this.scale;
 
-        if (this.centerView) {
+        if (this.centerView)
+        {
             this.worldOffset.x = (this.viewWidth - this.designWidth) / 2;
             this.worldOffset.y = (this.viewHeight - this.designHeight) / 2;
-        } else {
+        }
+        else
+        {
             this.worldOffset.x = 0;
             this.worldOffset.y = 0;
         }
     }
 
-    setCameraPosition(x, y) {
+    setCameraPosition(x, y)
+    {
         this.camera.set(x, y);
     }
 
-    moveCamera(dx, dy) {
+    moveCamera(dx, dy)
+    {
         this.camera.x += dx;
         this.camera.y += dy;
     }
 
-    centerCameraOn(x, y) {
+    centerCameraOn(x, y)
+    {
         this.camera.x = x + this.worldOffset.x - this.viewWidth / 2;
         this.camera.y = y + this.worldOffset.y - this.viewHeight / 2;
     }
 
-    worldToScreen(x, y) {
+    worldToScreen(x, y)
+    {
         return new Vector2(
             (x - this.camera.x + this.worldOffset.x) * this.scale,
             (y - this.camera.y + this.worldOffset.y) * this.scale
         );
     }
 
-    screenToWorld(x, y) {
+    screenToWorld(x, y)
+    {
         return new Vector2(
             this.camera.x - this.worldOffset.x + x / this.scale,
             this.camera.y - this.worldOffset.y + y / this.scale
         );
     }
 
-    setResolution(width, height) {
+    setResolution(width, height)
+    {
         this.designWidth = width;
         this.designHeight = height;
         this.updateView();
     }
 
-    #startGameLoop() {
-        if (this.isRunning) {
-            console.warn("Игровой цикл уже запущен");
+    #startGameLoop()
+    {
+        if (this.isRunning)
+        {
+            console.warn("Game loop is already running");
             return;
         }
 
@@ -226,7 +252,8 @@ class Engine extends GameEntity
         this.lastTime = performance.now();
         this.elapsedTime = 0;
 
-        if (!this.isFirstRunning) {
+        if (!this.isFirstRunning)
+        {
             this.start();
             this.isFirstRunning = true;
         }
@@ -234,13 +261,16 @@ class Engine extends GameEntity
         this.#gameLoop();
     }
 
-    stopGameLoop() {
-        if (!this.isRunning) {
-            console.warn("Игровой цикл не запущен");
+    stopGameLoop()
+    {
+        if (!this.isRunning)
+        {
+            console.warn("Game loop is not running");
             return;
         }
 
-        if (this.animationFrameId) {
+        if (this.animationFrameId)
+        {
             cancelAnimationFrame(this.animationFrameId);
             this.animationFrameId = null;
         }
@@ -248,7 +278,8 @@ class Engine extends GameEntity
         this.isRunning = false;
     }
 
-    #gameLoop(time = performance.now()) {
+    #gameLoop(time = performance.now())
+    {
         if (!this.isRunning) return;
 
         const deltaMs = Math.min(time - this.lastTime, this.maxDeltaTime);
@@ -257,7 +288,8 @@ class Engine extends GameEntity
 
         let hadLogicUpdate = false;
 
-        while (this.elapsedTime >= this.frameTime) {
+        while (this.elapsedTime >= this.frameTime)
+        {
             this.update(this.frameTime / 1000);
             this.elapsedTime -= this.frameTime;
             hadLogicUpdate = true;
@@ -266,23 +298,27 @@ class Engine extends GameEntity
         CollisionSystem.instance.updateCollisions();
         this.renderFrame();
 
-        // Очищаем pressed/released только если реально был логический кадр
-        if (hadLogicUpdate) {
+        // Clear pressed/released only when a logical step happened
+        if (hadLogicUpdate)
+        {
             this.input.update();
         }
 
         this.animationFrameId = requestAnimationFrame(this.#gameLoop.bind(this));
     }
 
-    start() {
+    start()
+    {
         this.scenes.start();
     }
 
-    update(dt) {
+    update(dt)
+    {
         this.scenes.update(dt);
     }
 
-    render(ctx) {
+    render(ctx)
+    {
         this.scenes.render(ctx);
     }
 
@@ -330,8 +366,10 @@ class Engine extends GameEntity
         ctx.restore();
     }
 
-    destroy() {
+    destroy()
+    {
         this.stopGameLoop();
+        this.audioManager.stopAll();
         window.removeEventListener("resize", this._onResize);
         super.destroy();
     }
@@ -347,18 +385,37 @@ class Engine extends GameEntity
     }
 
     async prepareData(data = {
-        images: []
+        images: [],
+        audio: [],
     })
     {
-        this.assets = await this.assetLoader.loadImages(this.data?.images ?? [])
+        const normalizedData = {
+            images: Array.isArray(data?.images) ? data.images : [],
+            audio: Array.isArray(data?.audio) ? data.audio : [],
+        };
+
+        const loadedAssets = await this.assetLoader.loadAssets(normalizedData);
+
+        this.assets = loadedAssets.images;
+        this.audioAssets = loadedAssets.audio;
+        this.audioManager.setAudioAssets(this.audioAssets);
+
+        return loadedAssets;
     }
 
-    async run(prepareFunc, data)
+    async run(prepareFunc = () => {}, data = {
+        images: [],
+        audio: [],
+    })
     {
-        await this.prepareData(data).then(() => {
+        await this.prepareData(data);
+
+        if (typeof prepareFunc === "function")
+        {
             prepareFunc();
-            Engine.instance.#startGameLoop();
-        });
+        }
+
+        Engine.instance.#startGameLoop();
     }
 
     getViewRect()
