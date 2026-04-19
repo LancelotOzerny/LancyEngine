@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Курс LancyEngine | Архитектура</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<main class="container">
+    <section class="hero">
+        <h1>Раздел 3: Архитектура и жизненный цикл</h1>
+        <p>Понимаем, как связаны классы движка и в каком порядке выполняется логика.</p>
+        <nav class="top-nav">
+            <a href="../index.html">Главная</a>
+            <a href="./quick-start.html">Назад</a>
+            <a href="./core.html">Дальше</a>
+        </nav>
+    </section>
+
+    <section class="layout">
+        <article class="card">
+            <h2>Связи сущностей</h2>
+            <pre><code class="language-text">Engine
+  └─ scenes: GameCollection
+      └─ Scene
+          └─ gameObjects: GameCollection
+              └─ GameObject
+                  └─ components: GameCollection
+                      └─ BaseComponent descendants</code></pre>
+            <h3>Базовый контракт</h3>
+            <p class="muted">
+                Все сущности наследуют lifecycle-методы: <code>init</code>, <code>start</code>,
+                <code>update(dt)</code>, <code>render(ctx)</code>, <code>destroy</code>.
+            </p>
+        </article>
+
+        <article class="card">
+            <h2>Порядок кадра</h2>
+            <ol>
+                <li><code>Engine.update(dt)</code> обновляет активные сцены.</li>
+                <li>Сцены обновляют объекты, объекты обновляют компоненты.</li>
+                <li><code>CollisionSystem.updateCollisions()</code> пересчитывает пересечения.</li>
+                <li><code>Engine.renderFrame()</code> рисует кадр с учетом камеры и масштабирования.</li>
+                <li><code>InputSystem.update()</code> очищает pressed/released (после логического шага).</li>
+            </ol>
+            <div class="note">
+                Апдейты идут с фиксированным шагом, а отрисовка синхронизирована через
+                <code>requestAnimationFrame</code>.
+            </div>
+        </article>
+
+        <article class="card">
+            <h2>Lifecycle-таблица</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>Метод</th>
+                    <th>Когда</th>
+                    <th>Что обычно делать</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><code>init()</code></td>
+                    <td>После добавления в коллекцию</td>
+                    <td>Подготовка ссылок, регистрация систем, стартовые параметры</td>
+                </tr>
+                <tr>
+                    <td><code>start()</code></td>
+                    <td>При первом запуске game loop</td>
+                    <td>Инициализация, зависящая от уже созданного мира</td>
+                </tr>
+                <tr>
+                    <td><code>update(dt)</code></td>
+                    <td>Каждый логический шаг</td>
+                    <td>Геймплей, ввод, движение, правила</td>
+                </tr>
+                <tr>
+                    <td><code>render(ctx)</code></td>
+                    <td>Каждый кадр</td>
+                    <td>Рисование (обычно через SpriteComponent)</td>
+                </tr>
+                <tr>
+                    <td><code>destroy()</code></td>
+                    <td>При удалении</td>
+                    <td>Очистка подписок и удаление из систем</td>
+                </tr>
+                </tbody>
+            </table>
+        </article>
+    </section>
+</main>
+</body>
+</html>

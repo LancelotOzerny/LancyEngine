@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Курс LancyEngine | Практические примеры</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<main class="container">
+    <section class="hero">
+        <h1>Раздел 8: Практические примеры</h1>
+        <p>Готовые шаблоны кода, которые можно брать за основу для реальных игровых сцен.</p>
+        <nav class="top-nav">
+            <a href="../index.html">Главная</a>
+            <a href="./audio.html">Назад</a>
+        </nav>
+    </section>
+
+    <section class="layout">
+        <article class="card">
+            <h2>Пример 1: Игрок с физикой и прыжком</h2>
+            <pre><code class="language-js">class Player extends GameObject {
+  constructor() {
+    super();
+    this.bindComponent(new SpriteComponent({
+      width: 56,
+      height: 56,
+      color: "#facc15"
+    }));
+
+    this.bindComponent(new ColliderComponent({
+      width: 48,
+      height: 48,
+      offsetX: 4,
+      offsetY: 4,
+      layer: 1,
+      mask: [2]
+    }));
+
+    this.body = new PhysicComponent({
+      gravityScale: 2.4,
+      drag: 0.1
+    });
+    this.bindComponent(this.body);
+  }
+
+  update(dt) {
+    super.update(dt);
+    if (Engine.instance.input.isKeyPressed("Space")) {
+      this.body.velocity.y = -520;
+      Engine.instance.audio.playSfx("jump", { volume: 0.8 });
+    }
+  }
+}</code></pre>
+        </article>
+
+        <article class="card">
+            <h2>Пример 2: Камера за игроком</h2>
+            <pre><code class="language-js">const cameraHost = new GameObject();
+cameraHost.bindComponent(new CameraComponent({
+  isMain: true,
+  target: player,
+  smoothness: 8,
+  deadZoneWidth: 280,
+  deadZoneHeight: 180,
+  bounds: { left: 0, top: 0, right: 6000, bottom: 1800 }
+}));
+scene.gameObjects.append(cameraHost);</code></pre>
+        </article>
+
+        <article class="card">
+            <h2>Пример 3: HUD + управление звуком</h2>
+            <pre><code class="language-js">const hud = new UiPanel("HUD");
+hud.backgroundColor = "transparent";
+
+const scoreText = hud.createText({
+  text: "Score: 0",
+  anchors: "left top",
+  x: 20,
+  y: 16
+});
+
+hud.createButton({
+  text: "Mute",
+  anchors: "right top",
+  x: 20,
+  y: 16,
+  click: () => Engine.instance.audio.toggleMute("master")
+});</code></pre>
+        </article>
+
+        <article class="card">
+            <h2>Пример 4: Полный запуск с ассетами</h2>
+            <pre><code class="language-js">Engine.instance.init("#game", {
+  width: 1920,
+  height: 1080,
+  backgroundColor: "#0f1720",
+  screenMode: "expand"
+});
+
+Engine.instance.scenes.append(new MainScene());
+
+Engine.instance.run(() => {
+  Engine.instance.audio.playMusic("theme", { loop: true, volume: 0.4 });
+}, {
+  images: ["./assets/player.png", "./assets/enemy.png"],
+  audio: ["./assets/theme.mp3", "./assets/jump.wav", "./assets/hit.wav"]
+});</code></pre>
+            <div class="note">
+                Для продакшн-проекта удобно расширить этот шаблон собственным SceneManager и save-системой.
+            </div>
+        </article>
+    </section>
+</main>
+</body>
+</html>

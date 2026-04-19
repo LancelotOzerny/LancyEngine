@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Курс LancyEngine | О движке</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<main class="container">
+    <section class="hero">
+        <h1>Раздел 1: Описание игрового движка</h1>
+        <p>
+            LancyEngine — легкий 2D-движок на JavaScript + Canvas с ECS-подходом, физикой, коллизиями,
+            камерой, загрузкой ассетов, аудио-менеджером и DOM UI поверх canvas.
+        </p>
+        <nav class="top-nav">
+            <a href="../index.html">Главная</a>
+            <a href="./quick-start.html">Следующий раздел</a>
+        </nav>
+    </section>
+
+    <section class="layout">
+        <article class="card">
+            <h2>Что умеет движок</h2>
+            <div class="pill-list">
+                <span class="pill">Game loop 60 FPS</span>
+                <span class="pill">Scene / GameObject / Component</span>
+                <span class="pill">AABB-коллизии</span>
+                <span class="pill">Arcade-физика</span>
+                <span class="pill">Камера с dead-zone</span>
+                <span class="pill">AudioManager</span>
+                <span class="pill">DOM UI</span>
+            </div>
+            <h3>Типичные сценарии</h3>
+            <ul>
+                <li>Аркады и платформеры.</li>
+                <li>Прототипы gameplay-механик.</li>
+                <li>Учебные проекты по архитектуре игровых систем.</li>
+            </ul>
+        </article>
+
+        <article class="card">
+            <h2>Плюсы и недостатки</h2>
+            <div class="grid cols-2">
+                <div>
+                    <h3>Плюсы</h3>
+                    <ul>
+                        <li>Простая структура исходников и низкий порог входа.</li>
+                        <li>Четкая декомпозиция на core/компоненты/UI.</li>
+                        <li>Готовые базовые системы: коллизии, физика, камера, аудио.</li>
+                        <li>Удобен для быстрых итераций и обучения.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Ограничения</h3>
+                    <ul>
+                        <li>Коллизии только AABB (без сложной геометрии).</li>
+                        <li>Нет полноценной event-bus системы (EventSystem — заготовка).</li>
+                        <li>Физика arcade-уровня, без high-end симуляции.</li>
+                        <li>Нет встроенного менеджера перехода между сценами.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="warn">
+                Движок лучше всего подходит для 2D проектов и курсовых задач, где важна прозрачность кода,
+                а не максимальный объем готовых инструментов.
+            </div>
+        </article>
+    </section>
+</main>
+</body>
+</html>

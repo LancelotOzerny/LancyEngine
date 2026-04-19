@@ -3,615 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LancyEngine - Техническая документация</title>
-    <style>
-        :root {
-            --bg: #f7f4ee;
-            --bg-soft: #fffdf8;
-            --card: #ffffff;
-            --ink: #1d2730;
-            --muted: #4f5b66;
-            --accent: #0f766e;
-            --accent-soft: #d9f2ef;
-            --line: #dde5e2;
-            --danger: #b54708;
-            --ok: #087443;
-            --shadow: 0 18px 40px rgba(20, 35, 30, 0.08);
-            --radius: 18px;
-            --max: 1180px;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html, body {
-            margin: 0;
-            padding: 0;
-            color: var(--ink);
-            background:
-                    radial-gradient(circle at 0% 0%, #e8f8f5 0, transparent 42%),
-                    radial-gradient(circle at 100% 15%, #fbe9d6 0, transparent 35%),
-                    linear-gradient(180deg, #f7f4ee 0%, #f0efe9 100%);
-            font-family: "IBM Plex Sans", "Segoe UI", Tahoma, sans-serif;
-            line-height: 1.55;
-        }
-
-        a {
-            color: var(--accent);
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .wrap {
-            width: min(100% - 36px, var(--max));
-            margin: 0 auto 40px;
-        }
-
-        .hero {
-            margin-top: 26px;
-            padding: 28px;
-            border-radius: var(--radius);
-            background: linear-gradient(135deg, #114f4a 0%, #0f766e 42%, #1f9c84 100%);
-            color: #f7fffc;
-            box-shadow: var(--shadow);
-            animation: rise 700ms ease both;
-        }
-
-        .hero h1 {
-            margin: 0 0 8px;
-            font-size: clamp(1.55rem, 2.7vw, 2.45rem);
-            font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
-            letter-spacing: 0.3px;
-        }
-
-        .hero p {
-            margin: 0;
-            max-width: 860px;
-            color: rgba(240, 255, 251, 0.95);
-        }
-
-        .layout {
-            margin-top: 20px;
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 18px;
-        }
-
-        .toc {
-            position: sticky;
-            top: 14px;
-            align-self: start;
-            padding: 16px;
-            background: var(--bg-soft);
-            border: 1px solid var(--line);
-            border-radius: 14px;
-            box-shadow: 0 10px 24px rgba(20, 35, 30, 0.05);
-            animation: rise 700ms 100ms ease both;
-        }
-
-        .toc h2 {
-            margin: 0 0 10px;
-            font-size: 1rem;
-            font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
-        }
-
-        .toc ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: grid;
-            gap: 6px;
-        }
-
-        .toc a {
-            display: block;
-            padding: 8px 10px;
-            border-radius: 10px;
-            color: var(--ink);
-            font-size: 0.95rem;
-        }
-
-        .toc a:hover {
-            background: var(--accent-soft);
-            text-decoration: none;
-        }
-
-        .content {
-            display: grid;
-            gap: 14px;
-            animation: rise 700ms 200ms ease both;
-        }
-
-        .card {
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
-            box-shadow: 0 10px 30px rgba(20, 35, 30, 0.06);
-            padding: 22px;
-        }
-
-        .card h2 {
-            margin: 0 0 10px;
-            font-size: clamp(1.2rem, 2vw, 1.65rem);
-            font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
-        }
-
-        .card h3 {
-            margin: 18px 0 8px;
-            font-size: 1.03rem;
-            font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
-        }
-
-        .muted {
-            color: var(--muted);
-        }
-
-        .chips {
-            margin-top: 10px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .chip {
-            padding: 6px 10px;
-            border-radius: 999px;
-            border: 1px solid #cce5dd;
-            background: #f1fbf8;
-            font-size: 0.82rem;
-            color: #16584f;
-        }
-
-        .steps {
-            margin: 10px 0 0;
-            padding-left: 18px;
-            display: grid;
-            gap: 8px;
-        }
-
-        .callout {
-            margin-top: 12px;
-            padding: 12px 14px;
-            border-radius: 12px;
-            border: 1px solid #fed7aa;
-            background: #fff7ed;
-            color: #7c2d12;
-            font-size: 0.95rem;
-        }
-
-        .callout.ok {
-            border-color: #bce7d1;
-            background: #edf9f2;
-            color: #145a34;
-        }
-
-        pre {
-            margin: 10px 0 0;
-            border-radius: 12px;
-            border: 1px solid #cdd7d3;
-            background: #152128;
-            color: #f2f9f7;
-            padding: 14px;
-            overflow-x: auto;
-            font-size: 0.89rem;
-            line-height: 1.5;
-        }
-
-        code {
-            font-family: "Cascadia Code", "Fira Code", "Consolas", monospace;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 8px;
-            font-size: 0.94rem;
-        }
-
-        th, td {
-            border: 1px solid var(--line);
-            padding: 10px;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        th {
-            background: #f6fbf9;
-        }
-
-        .grid-2 {
-            display: grid;
-            gap: 12px;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .pill {
-            display: inline-block;
-            font-size: 0.8rem;
-            padding: 2px 8px;
-            border-radius: 999px;
-            background: #e8f5f2;
-            color: #1a6158;
-            border: 1px solid #c4e7df;
-        }
-
-        .danger {
-            color: var(--danger);
-        }
-
-        .ok-text {
-            color: var(--ok);
-        }
-
-        footer {
-            margin-top: 8px;
-            font-size: 0.87rem;
-            color: #526067;
-        }
-
-        @keyframes rise {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 980px) {
-            .layout {
-                grid-template-columns: 1fr;
-            }
-
-            .toc {
-                position: static;
-            }
-        }
-    </style>
+    <title>LancyEngine Docs | Обучающий курс</title>
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<main class="wrap">
+<main class="container">
     <section class="hero">
-        <h1>LancyEngine: Техническая документация</h1>
-        <p>Эта страница объясняет архитектуру движка из <code>src</code>, показывает рабочий процесс от нуля до первой игры и даёт практические шаблоны кода. Фокус: чтобы даже новичок смог уверенно собрать прототип и понимать, что происходит в каждом кадре.</p>
-        <div class="chips">
-            <span class="chip">Canvas 2D</span>
-            <span class="chip">Entity-Component подход</span>
-            <span class="chip">Scene / GameObject / Component</span>
-            <span class="chip">Collision + Physics + Camera</span>
-            <span class="chip">UI поверх Canvas</span>
-        </div>
+        <h1>LancyEngine: Обучающий курс и документация</h1>
+        <p>
+            Главная страница курса по движку из <code>src/scripts</code>. Здесь собраны разделы:
+            архитектура, core-классы, компоненты, UI и отдельный блок по <strong>AudioManager</strong>.
+        </p>
+        <nav class="top-nav">
+            <a href="./docs/main.html">О движке</a>
+            <a href="./docs/quick-start.html">Быстрый старт</a>
+            <a href="./docs/components.html">Компоненты</a>
+            <a href="./docs/audio.html">AudioManager</a>
+            <a href="./docs/examples.html">Практика</a>
+        </nav>
     </section>
 
     <section class="layout">
-        <nav class="toc">
-            <h2>Содержание</h2>
-            <ul>
-                <li><a href="#quick-start">1. Быстрый старт</a></li>
-                <li><a href="#how-it-works">2. Как устроен движок</a></li>
-                <li><a href="#lifecycle">3. Жизненный цикл</a></li>
-                <li><a href="#api">4. Основной API</a></li>
-                <li><a href="#first-game">5. Первая игра (пошагово)</a></li>
-                <li><a href="#physics-collision">6. Физика и коллизии</a></li>
-                <li><a href="#camera-ui">7. Камера и UI</a></li>
-                <li><a href="#tips">8. Практические советы</a></li>
-                <li><a href="#limits">9. Текущие ограничения</a></li>
-            </ul>
-        </nav>
+        <article class="card">
+            <h2>Содержание курса</h2>
+            <p class="muted">Каждая страница ведет по шагам от базовой установки до полноценной игровой логики.</p>
+            <div class="grid cols-2">
+                <a class="course-link" href="./docs/main.html">
+                    <strong>1) Описание движка</strong>
+                    <span>Назначение, возможности, плюсы и ограничения.</span>
+                </a>
+                <a class="course-link" href="./docs/quick-start.html">
+                    <strong>2) Быстрый старт</strong>
+                    <span>Подключение бандлов, инициализация Engine, первый запуск.</span>
+                </a>
+                <a class="course-link" href="./docs/architecture.html">
+                    <strong>3) Архитектура и lifecycle</strong>
+                    <span>Связь Scene → GameObject → Component, порядок вызовов.</span>
+                </a>
+                <a class="course-link" href="./docs/core.html">
+                    <strong>4) Core-классы</strong>
+                    <span>Engine, Scene, GameObject, InputSystem, AssetLoader, AudioManager.</span>
+                </a>
+                <a class="course-link" href="./docs/components.html">
+                    <strong>5) Компоненты</strong>
+                    <span>Transform, Sprite, Collider, Physic, Camera: зачем и как использовать.</span>
+                </a>
+                <a class="course-link" href="./docs/ui.html">
+                    <strong>6) UI-система</strong>
+                    <span>UiPanel, UiText, UiButton, UiImage и якорное позиционирование.</span>
+                </a>
+                <a class="course-link" href="./docs/audio.html">
+                    <strong>7) AudioManager</strong>
+                    <span>Музыка и sfx, каналы, громкость, mute/pause/resume.</span>
+                </a>
+                <a class="course-link" href="./docs/examples.html">
+                    <strong>8) Практические примеры</strong>
+                    <span>Готовые фрагменты кода для типичных игровых задач.</span>
+                </a>
+            </div>
+        </article>
 
-        <div class="content">
-            <section id="quick-start" class="card">
-                <h2>1) Быстрый старт</h2>
-                <p class="muted">Минимальный путь, чтобы увидеть движок в работе.</p>
-                <ol class="steps">
-                    <li>Установите зависимости: <code>npm install</code></li>
-                    <li>Соберите движок: <code>npm run build</code></li>
-                    <li>Запустите dev-режим с автоперезагрузкой: <code>npm run develop</code></li>
-                    <li>Откройте <code>index.html</code> в корне проекта (BrowserSync поднимет локальный сервер)</li>
-                </ol>
+        <article class="card">
+            <h2>Обновление: AudioManager в документации</h2>
+            <p class="muted">
+                Раздел аудио вынесен в отдельную страницу и дополнительно отражен в core-доках.
+                Ниже минимальный пример запуска музыки и эффектов.
+            </p>
+            <pre><code class="language-js">await Engine.instance.run(() => {
+  Engine.instance.audio.playMusic("theme", {
+    loop: true,
+    volume: 0.5
+  });
 
-                <h3>Подключение бандлов</h3>
-                <pre><code class="language-html">&lt;link rel="stylesheet" href="./engine/styles.min.css"&gt;
-
-&lt;script src="./engine/math.min.js"&gt;&lt;/script&gt;
-&lt;script src="./engine/common.min.js"&gt;&lt;/script&gt;
-&lt;script src="./engine/core.min.js"&gt;&lt;/script&gt;
-&lt;script src="./engine/components.min.js"&gt;&lt;/script&gt;
-&lt;script src="./engine/ui.min.js"&gt;&lt;/script&gt;</code></pre>
-
-                <div class="callout ok">
-                    Важно: сначала <code>core.min.js</code>, потом <code>components.min.js</code>. Компоненты наследуются от <code>BaseComponent</code>, который объявлен в core.
-                </div>
-            </section>
-
-            <section id="how-it-works" class="card">
-                <h2>2) Как устроен движок</h2>
-                <div class="grid-2">
-                    <div>
-                        <h3>Базовые сущности</h3>
-                        <ul>
-                            <li><strong>Engine</strong> - singleton, хранит canvas, сцены, ввод, ассеты, камеру и игровой цикл.</li>
-                            <li><strong>Scene</strong> - контейнер игровых объектов (<code>gameObjects</code>).</li>
-                            <li><strong>GameObject</strong> - сущность в мире, содержит компоненты.</li>
-                            <li><strong>BaseComponent</strong> - поведение, которое можно подключить к объекту.</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3>Стандартные компоненты</h3>
-                        <ul>
-                            <li><code>TransformComponent</code> - позиция/поворот.</li>
-                            <li><code>SpriteComponent</code> - рендер спрайта или цветного прямоугольника.</li>
-                            <li><code>ColliderComponent</code> - AABB-коллизии, слои и маски.</li>
-                            <li><code>PhysicComponent</code> - скорость, силы, гравитация, резолв столкновений.</li>
-                            <li><code>CameraComponent</code> - следование за целью, dead-zone, bounds, shake.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <h3>Поток данных в кадре</h3>
-                <pre><code class="language-text">InputSystem -> Scene.update(dt) -> GameObject.update(dt) -> Component.update(dt)
-                                      -> CollisionSystem.updateCollisions()
-                                      -> Engine.renderFrame() -> Scene.render(ctx)</code></pre>
-            </section>
-
-            <section id="lifecycle" class="card">
-                <h2>3) Жизненный цикл объектов</h2>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Метод</th>
-                        <th>Когда вызывается</th>
-                        <th>Для чего использовать</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td><code>init()</code></td>
-                        <td>После добавления и инициализации коллекции</td>
-                        <td>Привязка ресурсов, начальная настройка</td>
-                    </tr>
-                    <tr>
-                        <td><code>start()</code></td>
-                        <td>Один раз при старте игрового цикла</td>
-                        <td>Стартовое состояние, кеш ссылок, камера</td>
-                    </tr>
-                    <tr>
-                        <td><code>update(dt)</code></td>
-                        <td>Логический кадр (фиксированный шаг ~1/60 сек)</td>
-                        <td>Игровая логика, движение, обработка ввода</td>
-                    </tr>
-                    <tr>
-                        <td><code>render(ctx)</code></td>
-                        <td>Каждый рендер-кадр</td>
-                        <td>Отрисовка (обычно делает SpriteComponent)</td>
-                    </tr>
-                    <tr>
-                        <td><code>destroy()</code></td>
-                        <td>При удалении</td>
-                        <td>Очистка ссылок, отписки, удаление из коллекций</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </section>
-
-            <section id="api" class="card">
-                <h2>4) Основной API</h2>
-
-                <h3>Engine.instance</h3>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Метод/поле</th>
-                        <th>Назначение</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td><code>init(selector, params)</code></td>
-                        <td>Инициализация canvas и параметров экрана.</td>
-                    </tr>
-                    <tr>
-                        <td><code>run(prepareFunc, data)</code></td>
-                        <td>Подготовка данных + запуск цикла.</td>
-                    </tr>
-                    <tr>
-                        <td><code>scenes.append(scene)</code></td>
-                        <td>Добавляет сцену в движок.</td>
-                    </tr>
-                    <tr>
-                        <td><code>input.isKeyDown(code)</code></td>
-                        <td>Проверка удержания клавиши (например, <code>KeyA</code>).</td>
-                    </tr>
-                    <tr>
-                        <td><code>screenToWorld(x, y)</code> / <code>worldToScreen(x, y)</code></td>
-                        <td>Преобразование координат мыши/мира.</td>
-                    </tr>
-                    </tbody>
-                </table>
-
-                <h3>Параметры Engine.init</h3>
-                <pre><code class="language-js">Engine.instance.init("#game", {
-  width: 1920,              // "дизайнерское" разрешение
-  height: 1080,
-  backgroundColor: "#0c1118",
-  screenMode: "expand",     // "expand" | "contain"
-  fitToWindow: true,
-  autoResize: true,
-  centerView: true,
-  pixelArt: false,
-  maxDeltaTime: 100
+  window.addEventListener("keydown", (event) => {
+    if (event.code === "Space") {
+      Engine.instance.audio.playSfx("jump", { volume: 0.8 });
+    }
+  });
+}, {
+  images: [],
+  audio: ["./assets/theme.mp3", "./assets/jump.wav"]
 });</code></pre>
-            </section>
-
-            <section id="first-game" class="card">
-                <h2>5) Первая игра (пошагово)</h2>
-                <p class="muted">Ниже минимальный шаблон, который уже можно развивать в платформер/аркаду.</p>
-
-                <h3>Шаг 1. Разметка</h3>
-                <pre><code class="language-html">&lt;canvas id="game"&gt;&lt;/canvas&gt;</code></pre>
-
-                <h3>Шаг 2. Игровой объект игрока</h3>
-                <pre><code class="language-js">class Player extends GameObject {
-  constructor() {
-    super();
-    this.speed = 420;
-
-    this.bindComponent(new SpriteComponent({
-      width: 90,
-      height: 90,
-      color: "#2cb67d"
-    }));
-
-    this.bindComponent(new ColliderComponent({
-      width: 90,
-      height: 90,
-      layer: 1
-    }));
-  }
-
-  update(dt) {
-    super.update(dt);
-    const input = Engine.instance.input;
-    let dx = 0;
-    let dy = 0;
-
-    if (input.isKeyDown("KeyA")) dx -= this.speed * dt;
-    if (input.isKeyDown("KeyD")) dx += this.speed * dt;
-    if (input.isKeyDown("KeyW")) dy -= this.speed * dt;
-    if (input.isKeyDown("KeyS")) dy += this.speed * dt;
-
-    this.transform.translate(dx, dy);
-  }
-}</code></pre>
-
-                <h3>Шаг 3. Сцена</h3>
-                <pre><code class="language-js">class MainScene extends Scene {
-  init() {
-    this.player = new Player();
-    this.player.transform.setPosition(300, 250);
-    this.gameObjects.append(this.player);
-  }
-}</code></pre>
-
-                <h3>Шаг 4. Запуск</h3>
-                <pre><code class="language-js">const engine = Engine.instance;
-
-engine.init("#game", {
-  width: 1920,
-  height: 1080,
-  backgroundColor: "#101820",
-  screenMode: "expand"
-});
-
-engine.scenes.append(new MainScene());
-engine.run(() => {
-  console.log("Игра запущена");
-}, { images: [] });</code></pre>
-
-                <div class="callout ok">
-                    Если сначала нужен прототип механик, используйте цветные прямоугольники в <code>SpriteComponent</code>, а ассеты подключите позже.
-                </div>
-            </section>
-
-            <section id="physics-collision" class="card">
-                <h2>6) Физика и коллизии</h2>
-                <h3>ColliderComponent</h3>
-                <ul>
-                    <li><code>layer</code> - слой объекта.</li>
-                    <li><code>mask</code> - массив слоёв, с которыми можно сталкиваться.</li>
-                    <li><code>isTrigger</code> - триггер без физического отталкивания.</li>
-                    <li><code>touching.bottom</code> и другие флаги - контакт по сторонам.</li>
-                </ul>
-
-                <h3>PhysicComponent</h3>
-                <ul>
-                    <li><code>applyForce(x, y)</code> - добавляет силу к текущему кадру.</li>
-                    <li><code>velocity</code> - текущая скорость по осям.</li>
-                    <li><code>useGravity</code>, <code>gravityScale</code>, <code>drag</code>.</li>
-                    <li><code>isGrounded</code> - приземлён ли объект после расчёта.</li>
-                </ul>
-
-                <pre><code class="language-js">const playerBody = player.findComponent(PhysicComponent);
-const playerCol = player.findComponent(ColliderComponent);
-
-if (Engine.instance.input.isKeyPressed("Space") && playerBody.isGrounded) {
-  playerBody.velocity.y = -650; // прыжок вверх
-}
-
-if (playerCol.isCollision) {
-  console.log("Есть столкновение с:", playerCol.collision?.parent?.name);
-}</code></pre>
-            </section>
-
-            <section id="camera-ui" class="card">
-                <h2>7) Камера и UI</h2>
-
-                <h3>Камера</h3>
-                <pre><code class="language-js">const cam = new CameraComponent({
-  isMain: true,
-  target: player,
-  smoothness: 8,
-  deadZoneWidth: 300,
-  deadZoneHeight: 180,
-  bounds: { left: 0, top: 0, right: 5000, bottom: 2000 }
-});
-
-cameraObject.bindComponent(cam);</code></pre>
-
-                <h3>UI (DOM поверх canvas)</h3>
-                <pre><code class="language-js">const hud = new UiPanel("HUD", { width: "100%", height: "100%" });
-hud.backgroundColor = "transparent";
-
-const score = hud.createText({
-  text: "Score: 0",
-  anchors: "left top",
-  x: 24,
-  y: 20
-});
-
-hud.createButton({
-  text: "Pause",
-  anchors: "right top",
-  x: 24,
-  y: 20,
-  click: () => Engine.instance.stopGameLoop()
-});</code></pre>
-            </section>
-
-            <section id="tips" class="card">
-                <h2>8) Практические советы</h2>
-                <ul>
-                    <li>Всегда вызывайте <code>super.update(dt)</code> в переопределённых <code>update</code>, чтобы не отключать логику компонентов.</li>
-                    <li>Для детерминированного поведения учитывайте, что <code>dt</code> передаётся в секундах.</li>
-                    <li>Если объект должен жить в конкретной сцене, создавайте его внутри <code>Scene.init()</code>.</li>
-                    <li>Для отладки коллизий храните ссылки на <code>ColliderComponent</code> и смотрите <code>contacts</code>/<code>touching</code>.</li>
-                    <li>Используйте <code>screenToWorld</code> для кликов мышью в world-координатах.</li>
-                </ul>
-            </section>
-
-            <section id="limits" class="card">
-                <h2>9) Текущие ограничения и что учесть</h2>
-                <ul>
-                    <li><span class="pill">Важно</span> <code>EventSystem</code> пока заглушка и не используется в ядре.</li>
-                    <li><span class="pill">Важно</span> Ассеты в <code>SpriteComponent</code> берутся по ключу имени файла без расширения (например <code>player.png</code> -> ключ <code>player</code>).</li>
-                    <li><span class="pill">Важно</span> В текущей версии <code>Engine.prepareData</code> использует <code>this.data</code>; при работе с загрузкой изображений стоит проверить эту часть перед продакшеном.</li>
-                    <li><span class="pill">Риск</span> При ручном подключении скриптов соблюдайте порядок, иначе можно получить ошибки наследования классов.</li>
-                </ul>
-
-                <footer>
-                    Основа документации собрана по коду в <code>src/scripts</code>: <span class="ok-text">engine.js</span>,
-                    <span class="ok-text">scene.js</span>, <span class="ok-text">gameobject.js</span>,
-                    компоненты, UI, системы коллизий и ввода.
-                </footer>
-            </section>
-        </div>
+            <div class="note">
+                Ключ аудио-ассета берется из имени файла без расширения:
+                <code>theme.mp3</code> → <code>theme</code>.
+            </div>
+        </article>
     </section>
+
+    <p class="footer">
+        Исходный технический текст: <a href="./READMY.MD">READMY.MD</a>.
+    </p>
 </main>
 </body>
 </html>
