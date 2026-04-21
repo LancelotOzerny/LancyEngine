@@ -159,10 +159,11 @@ t.text = "HP: 100";
 
 Ключевые поля:
 
-- `scenes: GameCollection`
+- `sceneManager: SceneManager`, алиас `scenes`
 - `assetLoader`, `assets`, `audioAssets`
 - `audioManager`, алиас `audio`
 - `input`
+- `events`, алиас `eventSystem`
 - параметры экрана: `designWidth/designHeight`, `viewWidth/viewHeight`, `screenWidth/screenHeight`, `scale`
 - камера: `camera`, `worldOffset`
 - режимы: `screenMode` (`expand`/`contain`), `fitToWindow`, `autoResize`, `pixelArt`
@@ -176,6 +177,9 @@ t.text = "HP: 100";
 - `setResolution()`
 - `run(prepareFunc, data)`
 - `prepareData({ images, audio })`
+- `switchScene(sceneOrKey, options)`
+- `pauseScene()`, `resumeScene()`, `toggleScenePause()`
+- `showLoadingScreen(options)`, `hideLoadingScreen()`
 - `stopGameLoop()`, `destroy()`
 - `getViewRect()`
 - `Engine.instance` (singleton getter)
@@ -242,17 +246,40 @@ class Player extends GameObject {
 
 - `gameObjects: GameCollection`
 - `init/start/update/render` делегируются в `gameObjects`
+- `preload(context)` для асинхронной подготовки ресурсов перед входом в сцену
+- lifecycle-хуки перехода сцен: `onEnter(previousScene, context)`, `onExit(nextScene, context)`
+- lifecycle-хуки паузы: `onPause()`, `onResume()`
 
 Пример:
 
 ```js
 class GameScene extends Scene {
+    async preload(context) {
+        context.setText("Подготовка сцены...");
+        context.setProgress(20);
+    }
+
     init() {
         const player = new Player();
         this.gameObjects.append(player);
     }
+
+    onEnter(previousScene, context) {}
+    onExit(nextScene, context) {}
 }
 ```
+
+### `SceneManager` (`src/scripts/core/scene-manager.js`)
+
+Назначение: управление активной сценой, асинхронными переходами, паузой и loading overlay.
+
+Ключевые возможности:
+
+- регистрация сцен: `add(key, scene)`, `append(scene)`, `remove(sceneOrKey, options)`
+- переключение сцен: `switchTo(sceneOrKey, options)` с поддержкой `preload`, `assets`, `load`, `unloadPrevious`
+- управление паузой: `pause()`, `resume()`, `togglePause()`
+- loading overlay: `showLoadingScreen()`, `setLoadingProgress()`, `setLoadingText()`, `hideLoadingScreen()`
+- коллайдеры неактивных сцен отключаются автоматически во время/после переключения
 
 ### `CollisionSystem` (`src/scripts/core/collision-system.js`)
 
@@ -369,13 +396,15 @@ Engine.instance.audio.playSfx("jump", { volume: 0.8 });
 
 ### `EventSystem` (`src/scripts/core/event-system.js`)
 
-Назначение: заготовка под событийную систему.
+Назначение: singleton event bus для подписок и публикации игровых событий.
 
-Текущее состояние:
+Ключевые методы:
 
-- содержит только `#onKeyDownEvent = new Event('onKeyDown', );`,
-- не используется остальным движком,
-- API фактически не реализован.
+- `EventSystem.instance`
+- `on(eventName, callback, options)` и `once(eventName, callback, options)`
+- `emit(eventName, ...args)`
+- `off(eventName, callback)` и `clear(eventName?)`
+- `listenerCount(eventName)`, `hasListeners(eventName)`
 
 ## 4.4 Components
 
@@ -810,15 +839,12 @@ hud.createButton({
 
 ## 7. Ограничения текущей реализации
 
-- `EventSystem` пока не реализован как полноценный event bus.
 - `CollisionSystem` работает с AABB (без SAT/rotation-collider физики).
 - `UiElement.active` устанавливает `display: hidden` (не стандартное значение CSS, лучше использовать `visible` или кастомное управление `display`).
 - Физика рассчитана на простой arcade-стиль, не на точную симуляцию.
 
 ## 8. Планы по расширению
 
-- Добавить полноценный `EventSystem` (subscribe/emit/off).
-- Добавить менеджер сцен (смена сцен, пауза сцены, unloading).
 - Добавить анимационный компонент (спрайт-листы, state machine).
 - Улучшить коллизии: continuous collision detection, отдельные broad-phase структуры.
 - Добавить официальный Debug Overlay (collider bounds, velocity, fps, camera rect).

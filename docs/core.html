@@ -30,7 +30,8 @@
                 </thead>
                 <tbody>
                 <tr><td><code>Engine</code></td><td>Singleton движка: canvas, цикл игры, экран, камеры, сцены.</td></tr>
-                <tr><td><code>Scene</code></td><td>Контейнер игровых объектов.</td></tr>
+                <tr><td><code>Scene</code></td><td>Контейнер игровых объектов + preload/enter/exit/pause hooks.</td></tr>
+                <tr><td><code>SceneManager</code></td><td>Переключение сцен, пауза, loading overlay и управление активной сценой.</td></tr>
                 <tr><td><code>GameObject</code></td><td>Игровая сущность с набором компонентов.</td></tr>
                 <tr><td><code>GameCollection</code></td><td>Универсальная коллекция c каскадным lifecycle.</td></tr>
                 <tr><td><code>InputSystem</code></td><td>Клавиатурный ввод (down/pressed/released).</td></tr>
@@ -38,7 +39,7 @@
                 <tr><td><code>AssetLoader</code></td><td>Загрузка изображений и аудио в <code>Map</code>.</td></tr>
                 <tr><td><code>AudioManager</code></td><td>Каналы звука, музыка, sfx, mute/pause/volume.</td></tr>
                 <tr><td><code>BaseComponent</code></td><td>База для всех компонентов ECS.</td></tr>
-                <tr><td><code>EventSystem</code></td><td>Заготовка под future event bus.</td></tr>
+                <tr><td><code>EventSystem</code></td><td>Singleton event bus: on/once/off/emit/clear.</td></tr>
                 </tbody>
             </table>
         </article>

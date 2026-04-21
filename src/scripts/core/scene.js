@@ -5,4 +5,9 @@ class Scene extends GameEntity
     update(deltaTime) { this.gameObjects.update(deltaTime) }
     render(ctx) { this.gameObjects.render(ctx) }
     init() { this.gameObjects.init() }
+    async preload(context) {}
+    onEnter(previousScene, context) {}
+    onExit(nextScene, context) {}
+    onPause() {}
+    onResume() {}
 }

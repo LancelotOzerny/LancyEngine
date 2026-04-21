@@ -56,9 +56,9 @@
                     <h3>Ограничения</h3>
                     <ul>
                         <li>Коллизии только AABB (без сложной геометрии).</li>
-                        <li>Нет полноценной event-bus системы (EventSystem — заготовка).</li>
                         <li>Физика arcade-уровня, без high-end симуляции.</li>
-                        <li>Нет встроенного менеджера перехода между сценами.</li>
+                        <li>SceneManager работает в модели одной активной сцены (без built-in scene stack).</li>
+                        <li>EventSystem минималистичный: без namespaced-событий и middleware.</li>
                     </ul>
                 </div>
             </div>

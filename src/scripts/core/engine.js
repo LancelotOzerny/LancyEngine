@@ -2,7 +2,8 @@ class Engine extends GameEntity
 {
     static #instance = null;
 
-    scenes = new GameCollection();
+    sceneManager = null;
+    scenes = null;
 
     constructor()
     {
@@ -29,6 +30,10 @@ class Engine extends GameEntity
         this.audioManager = new AudioManager();
         this.audio = this.audioManager;
         this.input = new InputSystem();
+        this.events = EventSystem.instance;
+        this.eventSystem = this.events;
+        this.sceneManager = new SceneManager(this);
+        this.scenes = this.sceneManager;
 
         this.params = {};
 
@@ -128,6 +133,7 @@ class Engine extends GameEntity
             window.addEventListener("resize", this._onResize);
         }
 
+        this.sceneManager.setEngine(this);
         this.scenes.init();
         this.isInitialized = true;
     }
@@ -364,12 +370,15 @@ class Engine extends GameEntity
         this.render(ctx);
 
         ctx.restore();
+
+        this.sceneManager?.renderOverlay?.(ctx);
     }
 
     destroy()
     {
         this.stopGameLoop();
         this.audioManager.stopAll();
+        this.events.clear();
         window.removeEventListener("resize", this._onResize);
         super.destroy();
     }
@@ -416,6 +425,36 @@ class Engine extends GameEntity
         }
 
         Engine.instance.#startGameLoop();
+    }
+
+    async switchScene(sceneOrKey, options = {})
+    {
+        return this.sceneManager.switchTo(sceneOrKey, options);
+    }
+
+    pauseScene()
+    {
+        this.sceneManager.pause();
+    }
+
+    resumeScene()
+    {
+        this.sceneManager.resume();
+    }
+
+    toggleScenePause()
+    {
+        return this.sceneManager.togglePause();
+    }
+
+    showLoadingScreen(options = {})
+    {
+        this.sceneManager.showLoadingScreen(options);
+    }
+
+    hideLoadingScreen()
+    {
+        this.sceneManager.hideLoadingScreen();
     }
 
     getViewRect()

@@ -22,8 +22,8 @@
         <article class="card">
             <h2>Связи сущностей</h2>
             <pre><code class="language-text">Engine
-  └─ scenes: GameCollection
-      └─ Scene
+  └─ sceneManager (alias: scenes)
+      └─ active Scene
           └─ gameObjects: GameCollection
               └─ GameObject
                   └─ components: GameCollection
@@ -38,10 +38,10 @@
         <article class="card">
             <h2>Порядок кадра</h2>
             <ol>
-                <li><code>Engine.update(dt)</code> обновляет активные сцены.</li>
-                <li>Сцены обновляют объекты, объекты обновляют компоненты.</li>
+                <li><code>Engine.update(dt)</code> обновляет активную сцену через <code>SceneManager</code>.</li>
+                <li>Активная сцена обновляет объекты, объекты обновляют компоненты.</li>
                 <li><code>CollisionSystem.updateCollisions()</code> пересчитывает пересечения.</li>
-                <li><code>Engine.renderFrame()</code> рисует кадр с учетом камеры и масштабирования.</li>
+                <li><code>Engine.renderFrame()</code> рисует кадр с учетом камеры и масштабирования, затем loading overlay.</li>
                 <li><code>InputSystem.update()</code> очищает pressed/released (после логического шага).</li>
             </ol>
             <div class="note">
