@@ -91,7 +91,41 @@ hud.createButton({
         </article>
 
         <article class="card">
-            <h2>Пример 4: Полный запуск с ассетами</h2>
+            <h2>Пример 4: Sprite sheet + state machine</h2>
+            <pre><code class="language-js">class Player extends GameObject {
+  constructor() {
+    super();
+    this.anim = new AnimationComponent({
+      sprite: "hero_sheet",
+      frameWidth: 64,
+      frameHeight: 64,
+      initialState: "idle",
+      states: {
+        idle: {
+          fps: 6,
+          frames: [0, 1, 2, 3],
+          transitions: [{ to: "run", param: "isMoving", equals: true }]
+        },
+        run: {
+          fps: 12,
+          frames: [8, 9, 10, 11, 12, 13],
+          transitions: [{ to: "idle", param: "isMoving", equals: false }]
+        }
+      }
+    });
+    this.bindComponent(this.anim);
+  }
+
+  update(dt) {
+    super.update(dt);
+    const moving = Engine.instance.input.isKeyDown("KeyA") || Engine.instance.input.isKeyDown("KeyD");
+    this.anim.setParam("isMoving", moving);
+  }
+}</code></pre>
+        </article>
+
+        <article class="card">
+            <h2>Пример 5: Полный запуск с ассетами</h2>
             <pre><code class="language-js">Engine.instance.init("#game", {
   width: 1920,
   height: 1080,

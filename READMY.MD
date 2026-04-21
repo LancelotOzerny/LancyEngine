@@ -7,7 +7,7 @@
 - `math`: математика (`Vector2`)
 - `common`: базовые сущности и UI-абстракции
 - `core`: цикл игры, сцены, объекты, загрузка ассетов, звук, ввод, коллизии
-- `components`: компоненты ECS-подхода (transform, sprite, collider, physic, camera)
+- `components`: компоненты ECS-подхода (transform, sprite, animation, collider, physic, camera)
 - `ui`: DOM-UI поверх canvas
 
 ## 2. Подключение и запуск
@@ -442,7 +442,8 @@ player.transform.rotation = 15;
 - `alpha` (прозрачность),
 - `blendMode` (режим наложения цвета),
 - `offsetX`, `offsetY`,
-- `width`, `height`.
+- `width`, `height`,
+- `setSourceRect(x, y, width, height)` / `clearSourceRect()` для рендера кадра из sprite sheet.
 
 Пример:
 
@@ -451,6 +452,49 @@ obj.bindComponent(new SpriteComponent({
     sprite: "player", // загрузить через Engine.prepareData/run
     width: 96,
     height: 96,
+}));
+```
+
+### `AnimationComponent` (`src/scripts/components/animation-component.js`)
+
+Назначение: покадровая анимация sprite sheet + state machine для переходов между состояниями.
+
+Ключевые параметры:
+
+- `sprite` или `spriteSheet` (источник изображения),
+- `frameWidth`, `frameHeight`, `columns` (как разбит лист на кадры),
+- `states` (набор состояний с кадрами и переходами),
+- `initialState`, `fps`, `autoPlay`, `playbackRate`.
+
+Ключевые методы:
+
+- `play(stateName?, options?)`, `setState(stateName, options?)`
+- `pause()`, `resume()`, `stop(options?)`
+- `setParam(name, value)`, `getParam(name)` для условий transitions
+- `getState()` возвращает активное состояние
+
+Пример:
+
+```js
+const player = new GameObject();
+
+player.bindComponent(new AnimationComponent({
+    sprite: "hero_sheet",
+    frameWidth: 64,
+    frameHeight: 64,
+    initialState: "idle",
+    states: {
+        idle: {
+            fps: 6,
+            frames: [0, 1, 2, 3],
+            transitions: [{ to: "run", param: "isMoving", equals: true }],
+        },
+        run: {
+            fps: 12,
+            frames: [8, 9, 10, 11, 12, 13],
+            transitions: [{ to: "idle", param: "isMoving", equals: false }],
+        },
+    },
 }));
 ```
 
@@ -700,6 +744,38 @@ obj.bindComponent(new SpriteComponent({
 obj.bindComponent(new SpriteComponent({ sprite: "hero" }));
 ```
 
+### `AnimationComponent`
+
+Для чего:
+
+- анимация персонажей/объектов по sprite sheet,
+- управление состояниями (`idle/run/jump/...`) через state machine.
+
+Как использовать:
+
+```js
+const anim = new AnimationComponent({
+    sprite: "hero_sheet",
+    frameWidth: 64,
+    frameHeight: 64,
+    initialState: "idle",
+    states: {
+        idle: { fps: 6, frames: [0, 1, 2, 3] },
+        run: { fps: 12, frames: [8, 9, 10, 11, 12, 13] },
+    },
+});
+
+obj.bindComponent(anim);
+```
+
+Переключение состояний:
+
+```js
+const anim = obj.findComponent(AnimationComponent);
+anim.setParam("isMoving", true);
+anim.play("run");
+```
+
 ### `ColliderComponent`
 
 Для чего:
@@ -837,6 +913,59 @@ hud.createButton({
 });
 ```
 
+### 6.4 Инструкция: как подключить AnimationComponent
+
+1) Подготовьте sprite sheet и добавьте файл в `images` при запуске `Engine.run`.
+
+2) Создайте объект и добавьте `AnimationComponent`:
+
+```js
+const player = new GameObject();
+
+player.bindComponent(new AnimationComponent({
+    sprite: "hero_sheet", // hero_sheet.png -> ключ hero_sheet
+    frameWidth: 64,
+    frameHeight: 64,
+    initialState: "idle",
+    states: {
+        idle: {
+            fps: 6,
+            frames: [0, 1, 2, 3],
+            transitions: [{ to: "run", param: "isMoving", equals: true }],
+        },
+        run: {
+            fps: 12,
+            frames: [8, 9, 10, 11, 12, 13],
+            transitions: [{ to: "idle", param: "isMoving", equals: false }],
+        },
+    },
+}));
+```
+
+3) В `update(dt)` обновляйте параметры transition:
+
+```js
+update(dt) {
+    super.update(dt);
+    const moving =
+        Engine.instance.input.isKeyDown("KeyA") ||
+        Engine.instance.input.isKeyDown("KeyD");
+
+    const anim = this.findComponent(AnimationComponent);
+    anim.setParam("isMoving", moving);
+}
+```
+
+4) Для ручного управления используйте:
+- `anim.play("run")`
+- `anim.setState("idle")`
+- `anim.pause()`, `anim.resume()`, `anim.stop()`
+
+5) Если кадры не совпадают:
+- проверьте `frameWidth/frameHeight`,
+- проверьте порядок кадров в `frames`,
+- убедитесь, что ключ `sprite` совпадает с именем файла без расширения.
+
 ## 7. Ограничения текущей реализации
 
 - `CollisionSystem` работает с AABB (без SAT/rotation-collider физики).
@@ -845,6 +974,5 @@ hud.createButton({
 
 ## 8. Планы по расширению
 
-- Добавить анимационный компонент (спрайт-листы, state machine).
 - Улучшить коллизии: continuous collision detection, отдельные broad-phase структуры.
 - Добавить официальный Debug Overlay (collider bounds, velocity, fps, camera rect).

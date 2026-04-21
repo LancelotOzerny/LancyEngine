@@ -6,6 +6,7 @@ class SpriteComponent extends BaseComponent
     blendMode = "overlay";
     _size = new Vector2(150, 150);
     _offset = new Vector2(0, 0);
+    sourceRect = null;
 
     constructor(params = {})
     {
@@ -23,6 +24,21 @@ class SpriteComponent extends BaseComponent
     set offsetY(value) { this._offset.y = value; }
     get offsetX() { return this._offset.x; }
     get offsetY() { return this._offset.y; }
+
+    setSourceRect(x, y, width, height)
+    {
+        this.sourceRect = {
+            x: Number(x) || 0,
+            y: Number(y) || 0,
+            width: Number(width) || 0,
+            height: Number(height) || 0,
+        };
+    }
+
+    clearSourceRect()
+    {
+        this.sourceRect = null;
+    }
 
     init()
     {
@@ -56,7 +72,25 @@ class SpriteComponent extends BaseComponent
         ctx.globalAlpha = this.alpha;
         if (this.sprite)
         {
-            ctx.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
+            if (this.sourceRect && this.sourceRect.width > 0 && this.sourceRect.height > 0)
+            {
+                ctx.drawImage(
+                    this.sprite,
+                    this.sourceRect.x,
+                    this.sourceRect.y,
+                    this.sourceRect.width,
+                    this.sourceRect.height,
+                    -this.width / 2,
+                    -this.height / 2,
+                    this.width,
+                    this.height
+                );
+            }
+            else
+            {
+                ctx.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
+            }
+
             if (this.color)
             {
                 ctx.save();

@@ -60,12 +60,42 @@ engine.run(() => {}, { images: [], audio: [] });</code></pre>
         </article>
 
         <article class="card">
+            <h2>Быстрый старт анимации (sprite sheet)</h2>
+            <ol>
+                <li>Добавьте sprite sheet в <code>images</code> при <code>Engine.run</code>.</li>
+                <li>Подключите <code>AnimationComponent</code> к объекту и задайте <code>frameWidth/frameHeight</code>.</li>
+                <li>Опишите состояния в <code>states</code> (например <code>idle</code> и <code>run</code>).</li>
+                <li>В <code>update(dt)</code> обновляйте параметры через <code>anim.setParam(...)</code>.</li>
+            </ol>
+            <pre><code class="language-js">const player = new GameObject();
+player.bindComponent(new AnimationComponent({
+  sprite: "hero_sheet",
+  frameWidth: 64,
+  frameHeight: 64,
+  initialState: "idle",
+  states: {
+    idle: {
+      fps: 6,
+      frames: [0, 1, 2, 3],
+      transitions: [{ to: "run", param: "isMoving", equals: true }]
+    },
+    run: {
+      fps: 12,
+      frames: [8, 9, 10, 11, 12, 13],
+      transitions: [{ to: "idle", param: "isMoving", equals: false }]
+    }
+  }
+}));</code></pre>
+        </article>
+
+        <article class="card">
             <h2>Что проверить после запуска</h2>
             <ol>
                 <li>Canvas отображается и занимает ожидаемую область.</li>
                 <li>Объект из сцены виден на экране.</li>
                 <li>Нет ошибок в консоли по загрузке скриптов.</li>
                 <li>Если подключены ассеты, ключи совпадают с именами файлов без расширений.</li>
+                <li>Для анимации: проверьте, что кадры переключаются и переходы состояний срабатывают.</li>
             </ol>
         </article>
     </section>

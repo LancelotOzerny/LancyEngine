@@ -45,6 +45,36 @@ obj.bindComponent(new SpriteComponent({
         </article>
 
         <article class="card">
+            <h2>AnimationComponent</h2>
+            <p class="muted">Sprite sheet анимация + state machine (idle/run/jump и переходы).</p>
+            <pre><code class="language-js">const anim = new AnimationComponent({
+  sprite: "hero_sheet",
+  frameWidth: 64,
+  frameHeight: 64,
+  initialState: "idle",
+  states: {
+    idle: {
+      fps: 6,
+      frames: [0, 1, 2, 3],
+      transitions: [{ to: "run", param: "isMoving", equals: true }]
+    },
+    run: {
+      fps: 12,
+      frames: [8, 9, 10, 11, 12, 13],
+      transitions: [{ to: "idle", param: "isMoving", equals: false }]
+    }
+  }
+});
+
+obj.bindComponent(anim);
+anim.setParam("isMoving", true);</code></pre>
+            <div class="note">
+                Инструкция: 1) загрузите sheet в <code>Engine.run({ images: [...] })</code>, 2) задайте <code>frameWidth/frameHeight</code>,
+                3) опишите <code>states</code> и <code>transitions</code>, 4) обновляйте параметры через <code>setParam()</code> в <code>update(dt)</code>.
+            </div>
+        </article>
+
+        <article class="card">
             <h2>ColliderComponent</h2>
             <p class="muted">AABB-коллизии, слои и маски столкновений, контактные флаги.</p>
             <pre><code class="language-js">const col = new ColliderComponent({
@@ -105,6 +135,7 @@ camera.shake(0.25, 12);</code></pre>
                 <tbody>
                 <tr><td><code>Transform</code></td><td>Всегда, базовая трансформация объекта.</td></tr>
                 <tr><td><code>Sprite</code></td><td>Нужно визуально отрисовать объект.</td></tr>
+                <tr><td><code>Animation</code></td><td>Нужна покадровая анимация и FSM-переходы состояний.</td></tr>
                 <tr><td><code>Collider</code></td><td>Нужны столкновения, триггеры, контакты.</td></tr>
                 <tr><td><code>Physic</code></td><td>Нужно движение по скорости/силам/гравитации.</td></tr>
                 <tr><td><code>Camera</code></td><td>Нужна динамическая камера за игроком/объектом.</td></tr>
