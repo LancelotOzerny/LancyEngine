@@ -10,6 +10,21 @@ class PhysicComponent extends BaseComponent
     force = new Vector2();
     prevPosition = new Vector2();
 
+    constructor(params = {})
+    {
+        super(params);
+
+        this.gravityScale = params.gravityScale ?? 1;
+        this.mass = params.mass ?? 1;
+        this.drag = params.drag ?? 0;
+        this.useGravity = params.useGravity ?? true;
+
+        this.velocity.set(
+            params.velocityX ?? 0,
+            params.velocityY ?? 0
+        );
+    }
+
     start()
     {
         this.velocity.set(0, 0);
