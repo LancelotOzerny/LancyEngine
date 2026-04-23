@@ -8,6 +8,9 @@ class BaseComponent extends GameEntity
         this.params = params;
     }
 
+    onAttach(gameObject) {}
+    onDetach(gameObject) {}
+
     destroy()
     {
         this.parent?.components.remove(this);

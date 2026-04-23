@@ -4,7 +4,8 @@
   "description": "Игровой движок на JavaScript + Canvas",
   "scripts": {
     "build": "gulp build",
-    "develop": "gulp develop"
+    "develop": "gulp develop",
+    "test": "node tests/lifecycle.test.js"
   },
   "devDependencies": {
     "browser-sync": "^3.0.4",

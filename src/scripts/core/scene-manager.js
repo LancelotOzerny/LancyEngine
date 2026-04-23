@@ -77,8 +77,6 @@ class SceneManager extends GameEntity
         this.scenes.set(key, scene);
         this.items.push(scene);
         this.sceneStates.set(scene, {
-            initialized: false,
-            started: false,
             preloaded: false,
             disabledColliders: new WeakMap(),
         });
@@ -385,16 +383,14 @@ class SceneManager extends GameEntity
         const state = this.sceneStates.get(scene);
         if (!state) return;
 
-        if (!state.initialized)
+        if (!scene._isInitialized)
         {
             scene.init?.();
-            state.initialized = true;
         }
 
-        if (!state.started)
+        if (!scene._isStarted)
         {
             scene.start?.();
-            state.started = true;
         }
     }
 
