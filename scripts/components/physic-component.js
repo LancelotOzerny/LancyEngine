@@ -1,5 +1,6 @@
 import { Vector2 } from "../math/vector2.js";
 import { BaseComponent } from "../core/base-component.js";
+import { BodyType } from "../core/collision-world.js";
 import { CollisionSystem } from "../core/collision-system.js";
 import { ColliderComponent } from "./collider-component.js";
 
@@ -55,6 +56,8 @@ export class PhysicComponent extends BaseComponent
 
         if (collider)
         {
+            collider.bodyType = collider.bodyType === BodyType.STATIC ? BodyType.STATIC : BodyType.DYNAMIC;
+            collider.isStatic = collider.bodyType === BodyType.STATIC;
             collider.resetFrameState();
         }
 
@@ -75,6 +78,7 @@ export class PhysicComponent extends BaseComponent
         {
             transform.position.x += this.velocity.x * dt;
             transform.position.y += this.velocity.y * dt;
+            if (collider) CollisionSystem.instance.updateCollider(collider);
             this.force.set(0, 0);
             return;
         }
@@ -85,6 +89,7 @@ export class PhysicComponent extends BaseComponent
         this.moveAxisY(dt, collider);
 
         this.collectTriggerContacts(collider);
+        CollisionSystem.instance.updateCollider(collider);
         this.force.set(0, 0);
     }
 
@@ -131,6 +136,8 @@ export class PhysicComponent extends BaseComponent
 
             this.velocity.x = 0;
         }
+
+        CollisionSystem.instance.updateCollider(collider);
     }
 
     moveAxisY(dt, collider)
@@ -178,6 +185,8 @@ export class PhysicComponent extends BaseComponent
 
             this.velocity.y = 0;
         }
+
+        CollisionSystem.instance.updateCollider(collider);
     }
 
     collectTriggerContacts(collider)

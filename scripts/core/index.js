@@ -1,6 +1,8 @@
 export { AssetLoader } from "./asset-loader.js";
 export { AudioManager } from "./audio-manager.js";
 export { BaseComponent } from "./base-component.js";
+export { BodyType, CollisionWorld } from "./collision-world.js";
+export { AABBShape, CircleShape, CollisionShapeType } from "./collision-shapes.js";
 export { CollisionSystem } from "./collision-system.js";
 export { Engine } from "./engine.js";
 export { getEngineInstance } from "./engine-instance.js";
@@ -10,3 +12,4 @@ export { GameObject } from "./gameobject.js";
 export { InputSystem } from "./input-system.js";
 export { Scene } from "./scene.js";
 export { SceneManager } from "./scene-manager.js";
+export { SpatialHashGrid } from "./spatial-hash-grid.js";

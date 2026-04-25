@@ -42,6 +42,9 @@ export class Engine extends GameEntity
         this.input = new InputSystem();
         this.events = EventSystem.instance;
         this.eventSystem = this.events;
+        this.collisionSystem = CollisionSystem.instance;
+        this.collisionWorld = this.collisionSystem.world;
+        this.physicsWorld = this.collisionWorld;
         this.sceneManager = new SceneManager(this);
         this.scenes = this.sceneManager;
 

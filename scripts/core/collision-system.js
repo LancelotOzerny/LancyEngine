@@ -1,102 +1,72 @@
+import { CollisionWorld } from "./collision-world.js";
+
 export class CollisionSystem
 {
     static instance = new CollisionSystem();
 
-    colliders = [];
+    constructor(world = new CollisionWorld())
+    {
+        this.world = world;
+        this.colliders = this.world.colliders;
+    }
 
     append(collider)
     {
-        if (!this.contain(collider))
-        {
-            this.colliders.push(collider);
-        }
+        return this.world.addCollider(collider);
     }
 
     remove(collider)
     {
-        const index = this.colliders.indexOf(collider);
-        if (index !== -1)
-        {
-            this.colliders.splice(index, 1);
-        }
+        this.world.removeCollider(collider);
     }
 
     contain(collider)
     {
-        return this.colliders.indexOf(collider) !== -1;
+        return this.world.contains(collider);
+    }
+
+    updateCollider(collider)
+    {
+        this.world.updateCollider(collider);
     }
 
     shouldCheck(a, b)
     {
-        if (a === b) return false;
-        if (!this.isCollider(a) || !this.isCollider(b)) return false;
-        return a.canCollideWith(b) && b.canCollideWith(a);
+        return this.world.shouldCheck(a, b);
     }
 
     isCollider(value)
     {
-        return Boolean(
-            value?.isColliderComponent &&
-            typeof value.canCollideWith === "function" &&
-            typeof value.getOverlap === "function" &&
-            typeof value.checkCollision === "function"
-        );
+        return this.world.isCollider(value);
     }
 
-    getOverlaps(
-        collider,
-        posX = collider.parent.transform.position.x,
-        posY = collider.parent.transform.position.y
-    )
+    getOverlaps(collider, posX = collider.parent.transform.position.x, posY = collider.parent.transform.position.y, options = {})
     {
-        const result = [];
+        return this.world.getOverlaps(collider, posX, posY, options);
+    }
 
-        for (const other of this.colliders)
-        {
-            if (!this.shouldCheck(collider, other))
-            {
-                continue;
-            }
+    overlapBox(x, y, width, height, options = {})
+    {
+        return this.world.overlapBox(x, y, width, height, options);
+    }
 
-            const info = collider.getOverlap(other, posX, posY);
+    overlapPoint(x, y, options = {})
+    {
+        return this.world.overlapPoint(x, y, options);
+    }
 
-            if (info.intersects)
-            {
-                result.push({
-                    collider: other,
-                    info,
-                });
-            }
-        }
+    overlapCircle(x, y, radius, options = {})
+    {
+        return this.world.overlapCircle(x, y, radius, options);
+    }
 
-        return result;
+    raycast(originX, originY, directionX, directionY, options = {})
+    {
+        return this.world.raycast(originX, originY, directionX, directionY, options);
     }
 
     updateCollisions()
     {
-        for (const collider of this.colliders)
-        {
-            collider.collisions.length = 0;
-        }
-
-        for (let i = 0; i < this.colliders.length; ++i)
-        {
-            for (let j = i + 1; j < this.colliders.length; ++j)
-            {
-                const a = this.colliders[i];
-                const b = this.colliders[j];
-
-                if (!this.shouldCheck(a, b))
-                {
-                    continue;
-                }
-
-                if (a.checkCollision(b))
-                {
-                    if (!a.collisions.includes(b)) a.collisions.push(b);
-                    if (!b.collisions.includes(a)) b.collisions.push(a);
-                }
-            }
-        }
+        this.world.update();
     }
 }

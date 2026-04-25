@@ -5,7 +5,7 @@
   "scripts": {
     "build": "gulp build",
     "develop": "gulp develop",
-    "test": "node --experimental-vm-modules tests/lifecycle.test.js"
+    "test": "node --experimental-vm-modules tests/collision-world.test.js"
   },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
