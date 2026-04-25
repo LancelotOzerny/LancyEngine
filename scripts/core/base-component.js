@@ -1,0 +1,21 @@
+import { GameEntity } from "../common/game-entity.js";
+
+export class BaseComponent extends GameEntity
+{
+    parent = null;
+
+    constructor(params = {})
+    {
+        super();
+        this.params = params;
+    }
+
+    onAttach(gameObject) {}
+    onDetach(gameObject) {}
+
+    destroy()
+    {
+        this.parent?.components.remove(this);
+        super.destroy();
+    }
+}

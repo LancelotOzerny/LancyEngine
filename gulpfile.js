@@ -1,121 +1,51 @@
 const gulp = require('gulp');
-const concat = require('gulp-concat');
-const uglify = require('gulp-uglify');
 const less = require('gulp-less');
 const cleanCSS = require('gulp-clean-css');
-const { deleteAsync } = require('del');
 const browserSync = require('browser-sync').create();
+const fs = require('fs');
 
-// Очистка папки engine перед сборкой
-function clean() {
-    return deleteAsync(['engine/**']);
-}
+const paths = {
+    less: {
+        entry: 'less/compile/*.less',
+        watch: 'less/**/*.less',
+        dest: 'css',
+    },
+};
 
-// Компиляция и оптимизация JS‑файлов по модулям
-function compileJS() {
-    const moduleConfigs = [
-        {
-            src: 'src/scripts/math/**/*.js',
-            dest: 'engine',
-            filename: 'math.min.js'
-        },
-        {
-            src: 'src/scripts/components/**/*.js',
-            dest: 'engine',
-            filename: 'components.min.js'
-        },
-        {
-            src: 'src/scripts/core/**/*.js',
-            dest: 'engine',
-            filename: 'core.min.js'
-        },
-        {
-            src: 'src/scripts/ui/**/*.js',
-            dest: 'engine',
-            filename: 'ui.min.js'
-        },
-        {
-            src: 'src/scripts/common/**/*.js',
-            dest: 'engine',
-            filename: 'common.min.js'
-        }
-    ];
-
-    const tasks = moduleConfigs.map(config => {
-        return gulp.src(config.src)
-            .pipe(concat(config.filename))
-            .pipe(uglify())
-            .pipe(gulp.dest(config.dest));
-    });
-
-    return Promise.all(tasks);
-}
-
-// Компиляция и минификация LESS‑файлов
 function compileLess() {
-    return gulp.src('src/less/compile/**/*.less')
+    fs.mkdirSync('less/compile', { recursive: true });
+    fs.mkdirSync(paths.less.dest, { recursive: true });
+
+    return gulp.src(paths.less.entry, { allowEmpty: true })
         .pipe(less())
         .pipe(cleanCSS())
-        .pipe(concat('styles.min.css'))
-        .pipe(gulp.dest('engine'));
+        .pipe(gulp.dest(paths.less.dest))
+        .pipe(browserSync.stream());
 }
 
-// Запуск локального сервера и инициализация BrowserSync
 function serve(done) {
     browserSync.init({
         server: {
-            baseDir: './' // Корневая директория проекта
+            baseDir: './',
         },
-        port: 3000, // Порт для сервера (можно изменить)
-        open: true, // Автоматически открывать браузер
-        notify: false // Отключить всплывающие уведомления
+        port: 3000,
+        open: true,
+        notify: false,
     });
+
     done();
 }
 
-// Перезагрузка браузера после компиляции JS
-function reloadJS(done) {
-    compileJS()
-        .then(() => {
-            browserSync.reload();
-            done();
-        })
-        .catch(done);
-}
-
-// Перезагрузка браузера после компиляции LESS
-function reloadLess(done) {
-    compileLess()
-        .then(() => {
-            browserSync.reload();
-            done();
-        })
-        .catch(done);
-}
-
-// Задача watch для отслеживания изменений и перезагрузки
 function watchFiles() {
-    // Отслеживание изменений JS‑файлов и перезагрузка
-    gulp.watch('src/scripts/**/*.js', reloadJS);
-
-    // Отслеживание изменений LESS‑файлов и перезагрузка
-    gulp.watch('src/less/compile/**/*.less', reloadLess);
-
-    // Отслеживание изменений HTML/других файлов для прямой перезагрузки
-    gulp.watch(['*.html', 'engine/**/*']).on('change', browserSync.reload);
+    gulp.watch(paths.less.watch, compileLess);
 }
 
-// Полная сборка проекта
-const build = gulp.series(clean, compileJS, compileLess);
+const build = compileLess;
+const develop = gulp.series(build, serve, watchFiles);
 
-// Запуск сервера и наблюдение за файлами
-const dev = gulp.series(build, serve, watchFiles);
-
-// Экспорт задач
-exports.clean = clean;
-exports.compileJS = compileJS;
 exports.compileLess = compileLess;
 exports.build = build;
 exports.serve = serve;
 exports.watch = watchFiles;
-exports.default = dev;
+exports.develop = develop;
+exports.default = develop;

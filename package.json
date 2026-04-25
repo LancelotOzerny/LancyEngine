@@ -5,15 +5,17 @@
   "scripts": {
     "build": "gulp build",
     "develop": "gulp develop",
-    "test": "node tests/lifecycle.test.js"
+    "test": "node --experimental-vm-modules tests/lifecycle.test.js"
   },
   "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
     "browser-sync": "^3.0.4",
     "del": "^7.0.0",
     "gulp": "^5.0.1",
     "gulp-clean-css": "^4.3.0",
     "gulp-concat": "^2.6.1",
     "gulp-less": "^5.0.0",
-    "gulp-uglify": "^3.0.2"
+    "gulp-uglify": "^3.0.2",
+    "rollup": "^4.40.0"
   }
 }
