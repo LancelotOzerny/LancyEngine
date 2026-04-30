@@ -13,3 +13,5 @@ export { InputSystem } from "./input-system.js";
 export { Scene } from "./scene.js";
 export { SceneManager } from "./scene-manager.js";
 export { SpatialHashGrid } from "./spatial-hash-grid.js";
+export { TileMap } from "./tile-map.js";
+export { TileSet } from "./tile-set.js";

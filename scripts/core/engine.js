@@ -37,6 +37,8 @@ export class Engine extends GameEntity
         this.assetLoader = new AssetLoader();
         this.assets = this.assetLoader.assets; // compatibility with SpriteComponent
         this.audioAssets = this.assetLoader.audio;
+        this.jsonAssets = this.assetLoader.json;
+        this.fileAssets = this.assetLoader.files;
         this.audioManager = new AudioManager();
         this.audio = this.audioManager;
         this.input = new InputSystem();
@@ -464,17 +466,23 @@ export class Engine extends GameEntity
     async prepareData(data = {
         images: [],
         audio: [],
+        json: [],
+        files: [],
     })
     {
         const normalizedData = {
             images: Array.isArray(data?.images) ? data.images : [],
             audio: Array.isArray(data?.audio) ? data.audio : [],
+            json: Array.isArray(data?.json) ? data.json : [],
+            files: Array.isArray(data?.files) ? data.files : [],
         };
 
         const loadedAssets = await this.assetLoader.loadAssets(normalizedData);
 
         this.assets = loadedAssets.images;
         this.audioAssets = loadedAssets.audio;
+        this.jsonAssets = loadedAssets.json;
+        this.fileAssets = loadedAssets.files;
         this.audioManager.setAudioAssets(this.audioAssets);
 
         return loadedAssets;
@@ -483,6 +491,8 @@ export class Engine extends GameEntity
     async run(prepareFunc = () => {}, data = {
         images: [],
         audio: [],
+        json: [],
+        files: [],
     })
     {
         await this.prepareData(data);
