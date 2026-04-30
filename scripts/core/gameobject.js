@@ -6,6 +6,12 @@ import { Engine } from "./engine.js";
 export class GameObject extends GameEntity
 {
     name = 'GameObject';
+    layer = "default";
+    zIndex = 0;
+    visible = true;
+    renderMode = "world";
+    _renderModeExplicit = false;
+
     components = new GameCollection(this, {
         onAttach: component => this._onComponentAttached(component),
         onDetach: component => this._onComponentDetached(component),
@@ -25,6 +31,46 @@ export class GameObject extends GameEntity
             this.init();
             this.start();
         }
+    }
+
+    setLayer(layerName)
+    {
+        this.layer = String(layerName ?? "default");
+
+        if (this.layer === "ui" && !this._renderModeExplicit)
+        {
+            this.renderMode = "screen";
+        }
+
+        this.parent?.markRenderListDirty?.();
+        return this;
+    }
+
+    setZIndex(value)
+    {
+        this.zIndex = Number(value) || 0;
+        this.parent?.markRenderListDirty?.();
+        return this;
+    }
+
+    setVisible(value)
+    {
+        this.visible = Boolean(value);
+        this.parent?.markRenderListDirty?.();
+        return this;
+    }
+
+    setRenderMode(mode)
+    {
+        if (mode !== "world" && mode !== "screen")
+        {
+            throw new Error(`Unsupported renderMode "${mode}". Use "world" or "screen".`);
+        }
+
+        this.renderMode = mode;
+        this._renderModeExplicit = true;
+        this.parent?.markRenderListDirty?.();
+        return this;
     }
 
     bindComponent(component)

@@ -185,10 +185,10 @@ export class SceneManager extends GameEntity
         this.activeScene.update?.(deltaTime);
     }
 
-    render(ctx)
+    render(ctx, ...args)
     {
         if (!this.activeScene) return;
-        this.activeScene.render?.(ctx);
+        this.activeScene.render?.(ctx, ...args);
     }
 
     pause()

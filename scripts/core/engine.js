@@ -272,6 +272,29 @@ export class Engine extends GameEntity
         );
     }
 
+    setWorldRenderTransform(ctx, layer = null)
+    {
+        const dpr = this.devicePixelRatio || 1;
+        const offset = this.getScreenOffset();
+        const parallaxX = layer?.parallaxX ?? 1;
+        const parallaxY = layer?.parallaxY ?? 1;
+
+        ctx.setTransform(
+            this.scale * dpr,
+            0,
+            0,
+            this.scale * dpr,
+            (offset.x + (-this.camera.x * parallaxX + this.worldOffset.x) * this.scale) * dpr,
+            (offset.y + (-this.camera.y * parallaxY + this.worldOffset.y) * this.scale) * dpr
+        );
+    }
+
+    setScreenRenderTransform(ctx)
+    {
+        const dpr = this.devicePixelRatio || 1;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
     setResolution(width, height)
     {
         this.designWidth = width;
@@ -381,27 +404,32 @@ export class Engine extends GameEntity
             ctx.fillRect(0, 0, this.screenWidth, this.screenHeight);
         }
 
-        let screenOffsetX = 0;
-        let screenOffsetY = 0;
-
-        if (this.screenMode === "contain")
-        {
-            screenOffsetX = (this.screenWidth - this.designWidth * this.scale) / 2;
-            screenOffsetY = (this.screenHeight - this.designHeight * this.scale) / 2;
-        }
-
         ctx.save();
 
-        ctx.setTransform(
-            this.scale * dpr,
-            0,
-            0,
-            this.scale * dpr,
-            (screenOffsetX + (-this.camera.x + this.worldOffset.x) * this.scale) * dpr,
-            (screenOffsetY + (-this.camera.y + this.worldOffset.y) * this.scale) * dpr
-        );
+        let activeRenderMode = null;
+        let activeLayer = null;
 
-        this.render(ctx);
+        this.scenes.render(ctx, (gameObject, layer) =>
+        {
+            if (gameObject.renderMode === "screen")
+            {
+                if (activeRenderMode !== "screen")
+                {
+                    this.setScreenRenderTransform(ctx);
+                    activeRenderMode = "screen";
+                    activeLayer = null;
+                }
+
+                return;
+            }
+
+            if (activeRenderMode !== "world" || activeLayer !== layer)
+            {
+                this.setWorldRenderTransform(ctx, layer);
+                activeRenderMode = "world";
+                activeLayer = layer;
+            }
+        });
 
         ctx.restore();
 
