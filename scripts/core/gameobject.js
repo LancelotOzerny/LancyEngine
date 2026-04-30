@@ -73,6 +73,22 @@ export class GameObject extends GameEntity
         return this;
     }
 
+    delay(seconds, callback, options = {})
+    {
+        return Engine.instance.timers.setTimeout(callback, seconds, {
+            ...options,
+            owner: options.owner ?? this,
+        });
+    }
+
+    tween(target, props, duration, options = {})
+    {
+        return Engine.instance.tweens.to(target, props, duration, {
+            ...options,
+            owner: options.owner ?? this,
+        });
+    }
+
     bindComponent(component)
     {
         return this.addComponent(component);

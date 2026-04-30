@@ -7,6 +7,8 @@ import { EventSystem } from "./event-system.js";
 import { InputSystem } from "./input-system.js";
 import { setEngineClass } from "./engine-instance.js";
 import { SceneManager } from "./scene-manager.js";
+import { TimerManager } from "./timer-manager.js";
+import { TweenManager } from "./tween-manager.js";
 
 export class Engine extends GameEntity
 {
@@ -42,6 +44,8 @@ export class Engine extends GameEntity
         this.audioManager = new AudioManager();
         this.audio = this.audioManager;
         this.input = new InputSystem();
+        this.timers = new TimerManager();
+        this.tweens = new TweenManager();
         this.events = EventSystem.instance;
         this.eventSystem = this.events;
         this.collisionSystem = CollisionSystem.instance;
@@ -379,6 +383,10 @@ export class Engine extends GameEntity
 
     update(dt)
     {
+        // Timers and tweens run before scene updates so callbacks and animated values
+        // are visible to gameplay code in the same fixed logic step.
+        this.timers.update(dt);
+        this.tweens.update(dt);
         this.scenes.update(dt);
     }
 
@@ -442,6 +450,8 @@ export class Engine extends GameEntity
     {
         this.stopGameLoop();
         this.input.destroy();
+        this.timers.clearAll();
+        this.tweens.clearAll();
         this.audioManager.stopAll();
         this.events.clear();
         window.removeEventListener("resize", this._onResize);
