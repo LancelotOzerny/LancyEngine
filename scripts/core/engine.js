@@ -132,6 +132,9 @@ export class Engine extends GameEntity
             this.canvas.style.imageRendering = "pixelated";
         }
 
+        this.input.init();
+        this.input.bind(this, this.canvas);
+
         if (this.fitToWindow)
         {
             this.canvas.style.display = "block";
@@ -238,17 +241,34 @@ export class Engine extends GameEntity
 
     worldToScreen(x, y)
     {
+        const offset = this.getScreenOffset();
+
         return new Vector2(
-            (x - this.camera.x + this.worldOffset.x) * this.scale,
-            (y - this.camera.y + this.worldOffset.y) * this.scale
+            offset.x + (x - this.camera.x + this.worldOffset.x) * this.scale,
+            offset.y + (y - this.camera.y + this.worldOffset.y) * this.scale
         );
     }
 
     screenToWorld(x, y)
     {
+        const offset = this.getScreenOffset();
+
         return new Vector2(
-            this.camera.x - this.worldOffset.x + x / this.scale,
-            this.camera.y - this.worldOffset.y + y / this.scale
+            this.camera.x - this.worldOffset.x + (x - offset.x) / this.scale,
+            this.camera.y - this.worldOffset.y + (y - offset.y) / this.scale
+        );
+    }
+
+    getScreenOffset()
+    {
+        if (this.screenMode !== "contain")
+        {
+            return new Vector2(0, 0);
+        }
+
+        return new Vector2(
+            (this.screenWidth - this.designWidth * this.scale) / 2,
+            (this.screenHeight - this.designHeight * this.scale) / 2
         );
     }
 
@@ -309,6 +329,7 @@ export class Engine extends GameEntity
 
         while (this.elapsedTime >= this.frameTime)
         {
+            this.input.updateGamepads();
             this.update(this.frameTime / 1000);
             this.elapsedTime -= this.frameTime;
             hadLogicUpdate = true;
@@ -390,6 +411,7 @@ export class Engine extends GameEntity
     destroy()
     {
         this.stopGameLoop();
+        this.input.destroy();
         this.audioManager.stopAll();
         this.events.clear();
         window.removeEventListener("resize", this._onResize);
